@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome Restaurant - Interactive Menu & Bill</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts: Newsreader & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              DEFAULT: '#b44a05',
+              dark: '#873300',
+              light: '#ffeedd',
+            },
+            surface: {
+              DEFAULT: '#fcf9f4',
+              dim: '#dcdad5',
+              container: '#f6f3ee',
+              card: '#ffffff'
+            },
+            veg: '#1e7e34'
+          },
+          fontFamily: {
+            serif: ['Newsreader', 'Georgia', 'serif'],
+            sans: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #e9e6df;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .font-serif {
+      font-family: 'Newsreader', Georgia, serif;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    /* Modal slide animation */
+    .modal-sheet {
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease-out;
+    }
+  </style>
+</head>
+<body class="flex justify-center min-h-screen">
+
+  <!-- Mobile Frame Container (Max 430px) -->
+  <div class="w-full max-w-[430px] bg-surface min-h-screen flex flex-col relative shadow-2xl pb-32">
+
+    <!-- Top App Bar / Header -->
+    <header class="sticky top-0 z-30 bg-surface/95 backdrop-blur-md px-4 py-3 border-b border-surface-dim/40 flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <a href="index.html" class="w-10 h-10 rounded-full bg-brand-light flex items-center justify-center text-brand border border-brand/20 shadow-sm overflow-hidden">
+          <svg class="w-6 h-6 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8h1a4 4 0 0 1 0 8h-1"/>
+            <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/>
+            <line x1="6" y1="1" x2="6" y2="4"/>
+            <line x1="10" y1="1" x2="10" y2="4"/>
+            <line x1="14" y1="1" x2="14" y2="4"/>
+          </svg>
+        </a>
+        <div>
+          <div class="flex items-center gap-1.5">
+            <h1 class="font-serif text-lg font-bold text-neutral-900 leading-tight">Welcome Restaurant</h1>
+            <span class="inline-flex items-center justify-center w-3.5 h-3.5 border border-veg p-0.5 rounded-[2px]" title="100% Pure Veg">
+              <span class="w-1.5 h-1.5 bg-veg rounded-full"></span>
+            </span>
+          </div>
+          <p class="text-[10px] tracking-wider uppercase font-semibold text-neutral-500">MENU &amp; SPECIALS</p>
+        </div>
+      </div>
+      <button class="w-9 h-9 rounded-full bg-brand text-white flex items-center justify-center shadow hover:bg-brand-dark transition-colors">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+      </button>
+    </header>
+
+    <!-- Main Content -->
+    <main class="px-4 py-3 space-y-4">
+
+      <!-- Search Bar -->
+      <div class="flex items-center gap-2">
+        <div class="flex-1 flex items-center gap-2 bg-surface-container border border-surface-dim/80 rounded-2xl px-3 py-2 text-neutral-500 shadow-sm focus-within:border-brand">
+          <svg class="w-4 h-4 text-neutral-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/>
+            <path d="m21 21-4.3-4.3"/>
+          </svg>
+          <input 
+            id="searchInput"
+            type="text" 
+            placeholder="Search ghee dosa, filter coffee, bonda..." 
+            class="bg-transparent text-xs text-neutral-800 placeholder-neutral-400 focus:outline-none w-full font-medium"
+          />
+        </div>
+      </div>
+
+      <!-- Category Filter Tabs -->
+      <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1" id="categoryTabs">
+        <button data-cat="all" class="cat-pill active px-4 py-1.5 rounded-full text-xs font-semibold bg-emerald-900 text-white shadow-sm whitespace-nowrap">
+          All Items
+        </button>
+        <button data-cat="tiffin" class="cat-pill px-4 py-1.5 rounded-full text-xs font-semibold bg-surface-card border border-surface-dim text-neutral-600 hover:bg-surface-container whitespace-nowrap">
+          Tiffin &amp; Breakfast
+        </button>
+        <button data-cat="snacks" class="cat-pill px-4 py-1.5 rounded-full text-xs font-semibold bg-surface-card border border-surface-dim text-neutral-600 hover:bg-surface-container whitespace-nowrap">
+          Evening Snacks
+        </button>
+        <button data-cat="beverages" class="cat-pill px-4 py-1.5 rounded-full text-xs font-semibold bg-surface-card border border-surface-dim text-neutral-600 hover:bg-surface-container whitespace-nowrap">
+          Hot Beverages
+        </button>
+      </div>
+
+      <!-- Sattvic Badge Strip -->
+      <section class="bg-emerald-50/80 border border-emerald-200/80 rounded-2xl p-3 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <div class="w-7 h-7 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center flex-shrink-0">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+          </div>
+          <div>
+            <h4 class="text-xs font-bold text-emerald-950">100% Sattvic &amp; Pure Vegetarian</h4>
+            <p class="text-[10px] text-emerald-700">Prepared with pure cow ghee &amp; cold-pressed oils</p>
+          </div>
+        </div>
+        <span class="text-[10px] font-bold tracking-wider uppercase bg-white text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-md shadow-xs">
+          Hygienic
+        </span>
+      </section>
+
+      <!-- SECTION 1: Authentic Tiffin Specials -->
+      <section class="menu-section space-y-3 pt-1" data-section="tiffin">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="font-serif text-lg font-bold text-brand-dark">Authentic Tiffin Specials</h3>
+            <p class="text-[11px] text-neutral-500">Freshly ground batters, served steaming hot all day</p>
+          </div>
+          <span class="text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-800 px-2 py-0.5 rounded-md">Popular</span>
+        </div>
+
+        <div class="space-y-3">
+          <!-- Idly (2 Pcs) -->
+          <div class="menu-item bg-surface-card rounded-2xl p-3 border border-surface-dim/50 shadow-sm flex items-center justify-between gap-3" data-id="idly">
+            <div class="flex-1 space-y-1">
+              <div class="flex items-center gap-1.5">
+                <span class="inline-flex items-center justify-center w-3 h-3 border border-veg p-0.5 rounded-[2px]"><span class="w-1.5 h-1.5 bg-veg rounded-full"></span></span>
+                <h4 class="font-semibold text-neutral-900 text-sm item-title">Idly (2 Pcs)</h4>
+              </div>
+              <p class="text-xs text-neutral-500 line-clamp-2 leading-relaxed item-desc">Steaming soft fluffy rice cakes served with hotel sambar, fresh coconut &amp; tomato chutney.</p>
+              <div class="pt-1 flex items-center justify-between">
+                <span class="font-bold text-neutral-900 text-sm">₹45</span>
+                <div class="cart-action-container" data-id="idly">
+                  <button onclick="handleAddToCart('idly', 'Idly (2 Pcs)', 45)" class="px-3.5 py-1 bg-surface-container border border-brand/30 text-brand rounded-lg text-xs font-bold hover:bg-brand hover:text-white transition-all">+ ADD</button>
+                </div>
+              </div>
+            </div>
+            <img src="https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=260&q=80" alt="Idly" class="w-20 h-20 rounded-xl object-cover flex-shrink-0"/>
+          </div>
+
+          <!-- Ven Pongal -->
+          <div class="menu-item bg-surface-card rounded-2xl p-3 border border-surface-dim/50 shadow-sm flex items-center justify-between gap-3" data-id="pongal">
+            <div class="flex-1 space-y-1">
+              <div class="flex items-center gap-1.5">
+                <span class="inline-flex items-center justify-center w-3 h-3 border border-veg p-0.5 rounded-[2px]"><span class="w-1.5 h-1.5 bg-veg rounded-full"></span></span>
+                <h4 class="font-semibold text-neutral-900 text-sm item-title">Ven Pongal</h4>
+              </div>
+              <p class="text-xs text-neutral-500 line-clamp-2 leading-relaxed item-desc">Traditional Ven Pongal prepared in pure ghee, garnished with roasted cashews &amp; black pepper.</p>
+              <div class="pt-1 flex items-center justify-between">
+                <div class="flex items-center gap-1.5">
+                  <span class="font-bold text-neutral-900 text-sm">₹75</span>
+                  <span class="text-[10px] bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded font-medium">Ghee Rich</span>
+                </div>
+                <div class="cart-action-container" data-id="pongal">
+                  <button onclick="handleAddToCart('pongal', 'Ven Pongal', 75)" class="px-3.5 py-1 bg-surface-container border border-brand/30 text-brand rounded-lg text-xs font-bold hover:bg-brand hover:text-white transition-all">+ ADD</button>
+                </div>
+              </div>
+            </div>
+            <img src="https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=260&q=80" alt="Ven Pongal" class="w-20 h-20 rounded-xl object-cover flex-shrink-0"/>
+          </div>
+
+          <!-- Poori Masala -->
+          <div class="menu-item bg-surface-card rounded-2xl p-3 border border-surface-dim/50 shadow-sm flex items-center justify-between gap-3" data-id="poori">
+            <div class="flex-1 space-y-1">
+              <div class="flex items-center gap-1.5">
+                <span class="inline-flex items-center justify-center w-3 h-3 border border-veg p-0.5 rounded-[2px]"><span class="w-1.5 h-1.5 bg-veg rounded-full"></span></span>
+                <h4 class="font-semibold text-neutral-900 text-sm item-title">Poori Masala (2 Pcs)</h4>
+              </div>
+              <p class="text-xs text-neutral-500 line-clamp-2 leading-relaxed item-desc">Puffed golden whole-wheat pooris served with spiced potato masala and coconut chutney.</p>
+              <div class="pt-1 flex items-center justify-between">
+                <span class="font-bold text-neutral-900 text-sm">₹70</span>
+                <div class="cart-action-container" data-id="poori">
+                  <button onclick="handleAddToCart('poori', 'Poori Masala (2 Pcs)', 70)" class="px-3.5 py-1 bg-surface-container border border-brand/30 text-brand rounded-lg text-xs font-bold hover:bg-brand hover:text-white transition-all">+ ADD</button>
+                </div>
+              </div>
+            </div>
+            <img src="https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=260&q=80" alt="Poori Masala" class="w-20 h-20 rounded-xl object-cover flex-shrink-0"/>
+          </div>
+
+          <!-- Signature Dosa Collection -->
+          <div class="menu-item bg-surface-card rounded-2xl p-3.5 border border-surface-dim/60 shadow-sm space-y-3" data-id="dosa-collection">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-1.5">
+                <span class="inline-flex items-center justify-center w-3 h-3 border border-veg p-0.5 rounded-[2px]"><span class="w-1.5 h-1.5 bg-veg rounded-full"></span></span>
+                <h4 class="font-serif text-base font-bold text-neutral-900 item-title">Signature Dosa Collection</h4>
+              </div>
+              <span class="text-[10px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-medium">Fermented Rice &amp; Lentil</span>
+            </div>
+            <div class="relative rounded-xl overflow-hidden h-36">
+              <img src="https://images.unsplash.com/photo-1668236543090-82eba5ee5976?auto=format&fit=crop&w=600&q=80" alt="Dosa" class="w-full h-full object-cover"/>
+            </div>
+            <div class="divide-y divide-surface-dim/60 pt-1">
+              <div class="py-2 flex items-center justify-between">
+                <div>
+                  <p class="text-xs font-bold text-neutral-900">Ghee Roast Dosa</p>
+                  <p class="text-[11px] text-neutral-500">Crisped with artisanal cow ghee</p>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-bold text-neutral-800">₹85</span>
+                  <div class="cart-action-container" data-id="ghee-roast">
+                    <button onclick="handleAddToCart('ghee-roast', 'Ghee Roast Dosa', 85)" class="px-2.5 py-1 bg-surface-container border border-brand/30 text-brand rounded-lg text-xs font-bold hover:bg-brand hover:text-white transition-all">+ ADD</button>
+                  </div>
+                </div>
+              </div>
+              <div class="py-2 flex items-center justify-between">
+                <div>
+                  <p class="text-xs font-bold text-neutral-900">Crispy Masala Dosa</p>
+                  <p class="text-[11px] text-neutral-500">Stuffed with fragrant spiced potato bhaji</p>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-bold text-neutral-800">₹95</span>
+                  <div class="cart-action-container" data-id="masala-dosa">
+                    <button onclick="handleAddToCart('masala-dosa', 'Crispy Masala Dosa', 95)" class="px-2.5 py-1 bg-surface-container border border-brand/30 text-brand rounded-lg text-xs font-bold hover:bg-brand hover:text-white transition-all">+ ADD</button>
+                  </div>
+                </div>
+              </div>
+              <div class="py-2 flex items-center justify-between">
+                <div>
+                  <p class="text-xs font-bold text-neutral-900">Onion Rava Dosa</p>
+                  <p class="text-[11px] text-neutral-500">Crisp semolina net crepe with sauteed onions</p>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-bold text-neutral-800">₹100</span>
+                  <div class="cart-action-container" data-id="rava-dosa">
+                    <button onclick="handleAddToCart('rava-dosa', 'Onion Rava Dosa', 100)" class="px-2.5 py-1 bg-surface-container border border-brand/30 text-brand rounded-lg text-xs font-bold hover:bg-brand hover:text-white transition-all">+ ADD</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Appam with Coconut Milk -->
+          <div class="menu-item bg-surface-card rounded-2xl p-3 border border-surface-dim/50 shadow-sm flex items-center justify-between gap-3" data-id="appam">
+            <div class="flex-1 space-y-1">
+              <div class="flex items-center gap-1.5">
+                <span class="inline-flex items-center justify-center w-3 h-3 border border-veg p-0.5 rounded-[2px]"><span class="w-1.5 h-1.5 bg-veg rounded-full"></span></span>
+                <h4 class="font-semibold text-neutral-900 text-sm item-title">Appam with Coconut Milk</h4>
+              </div>
+              <p class="text-xs text-neutral-500 line-clamp-2 leading-relaxed item-desc">Delicate lacy fermented rice pancakes with sweet cardamom coconut milk broth.</p>
+              <div class="pt-1 flex items-center justify-between">
+                <span class="font-bold text-neutral-900 text-sm">₹80</span>
+                <div class="cart-action-container" data-id="appam">
+                  <button onclick="handleAddToCart('appam', 'Appam with Coconut Milk', 80)" class="px-3.5 py-1 bg-surface-container border border-brand/30 text-brand rounded-lg text-xs font-bold hover:bg-brand hover:text-white transition-all">+ ADD</button>
+                </div>
+              </div>
+            </div>
+            <img src="https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=260&q=80" alt="Appam" class="w-20 h-20 rounded-xl object-cover flex-shrink-0"/>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 2: Crispy Evening Snacks -->
+      <section class="menu-section space-y-3 pt-2" data-section="snacks">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="font-serif text-lg font-bold text-brand-dark">Crispy Evening Snacks</h3>
+            <p class="text-[11px] text-neutral-500">Fresh batches fried continuously from 3:30 PM onwards</p>
+          </div>
+          <span class="text-[10px] font-semibold bg-neutral-200/80 text-neutral-700 px-2 py-0.5 rounded">3:30 PM Onwards</span>
+        </div>
+
+        <div class="space-y-3">
+          <!-- Mirchi & Vazhaikkai Bajji -->
+          <div class="menu-item bg-surface-card rounded-2xl p-3 border border-surface-dim/50 shadow-sm flex items-center justify-between gap-3" data-id="bajji">
+            <div class="flex-1 space-y-1">
+              <div class="flex items-center gap-1.5">
+                <span class="inline-flex items-center justify-center w-3 h-3 border border-veg p-0.5 rounded-[2px]"><span class="w-1.5 h-1.5 bg-veg rounded-full"></span></span>
+                <h4 class="font-semibold text-neutral-900 text-sm item-title">Mirchi &amp; Vazhaikkai Bajji</h4>
+              </div>
+              <p class="text-xs text-neutral-500 line-clamp-2 leading-relaxed item-desc">Golden gram flour batter-fried crisps served with spicy kara chutney.</p>
+              <div class="pt-1 flex items-center justify-between">
+                <span class="font-bold text-neutral-900 text-sm">₹50</span>
+                <div class="cart-action-container" data-id="bajji">
+                  <button onclick="handleAddToCart('bajji', 'Mirchi & Vazhaikkai Bajji', 50)" class="px-3.5 py-1 bg-surface-container border border-brand/30 text-brand rounded-lg text-xs font-bold hover:bg-brand hover:text-white transition-all">+ ADD</button>
+                </div>
+              </div>
+            </div>
+            <img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=260&q=80" alt="Bajji" class="w-20 h-20 rounded-xl object-cover flex-shrink-0"/>
+          </div>
+
+          <!-- Mysore Bonda -->
+          <div class="menu-item bg-surface-card rounded-2xl p-3 border border-surface-dim/50 shadow-sm flex items-center justify-between gap-3" data-id="bonda">
+            <div class="flex-1 space-y-1">
+              <div class="flex items-center gap-1.5">
+                <span class="inline-flex items-center justify-center w-3 h-3 border border-veg p-0.5 rounded-[2px]"><span class="w-1.5 h-1.5 bg-veg rounded-full"></span></span>
+                <h4 class="font-semibold text-neutral-900 text-sm item-title">Mysore Bonda (4 Pcs)</h4>
+              </div>
+              <p class="text-xs text-neutral-500 line-clamp-2 leading-relaxed item-desc">Crispy outside, fluffy inside spiced urad dal fritters with fresh coconut chunks.</p>
+              <div class="pt-1 flex items-center justify-between">
+                <span class="font-bold text-neutral-900 text-sm">₹55</span>
+                <div class="cart-action-container" data-id="bonda">
+                  <button onclick="handleAddToCart('bonda', 'Mysore Bonda (4 Pcs)', 55)" class="px-3.5 py-1 bg-surface-container border border-brand/30 text-brand rounded-lg text-xs font-bold hover:bg-brand hover:text-white transition-all">+ ADD</button>
+                </div>
+              </div>
+            </div>
+            <img src="https://images.unsplash.com/photo-1606491956689-2ea866880c84?auto=format&fit=crop&w=260&q=80" alt="Bonda" class="w-20 h-20 rounded-xl object-cover flex-shrink-0"/>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 3: Hot Beverages & Kaapi -->
+      <section class="menu-section space-y-3 pt-2" data-section="beverages">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="font-serif text-lg font-bold text-brand-dark">Hot Beverages &amp; Filter Kaapi</h3>
+            <p class="text-[11px] text-neutral-500">Poured high in traditional brass dabara tumblers</p>
+          </div>
+          <span class="text-[10px] font-semibold bg-rose-100 text-rose-800 px-2 py-0.5 rounded">House Special</span>
+        </div>
+
+        <div class="space-y-3">
+          <!-- Filter Coffee -->
+          <div class="menu-item bg-surface-card rounded-2xl p-3 border border-surface-dim/50 shadow-sm flex items-center justify-between gap-3" data-id="coffee">
+            <div class="flex-1 space-y-1">
+              <div class="flex items-center gap-1.5">
+                <span class="inline-flex items-center justify-center w-3 h-3 border border-veg p-0.5 rounded-[2px]"><span class="w-1.5 h-1.5 bg-veg rounded-full"></span></span>
+                <h4 class="font-semibold text-neutral-900 text-sm item-title">South Indian Filter Coffee</h4>
+              </div>
+              <p class="text-xs text-neutral-500 line-clamp-2 leading-relaxed item-desc">Authentic strong decoction chicory blend frothed in a traditional brass dabara.</p>
+              <div class="pt-1 flex items-center justify-between">
+                <span class="font-bold text-neutral-900 text-sm">₹35</span>
+                <div class="cart-action-container" data-id="coffee">
+                  <button onclick="handleAddToCart('coffee', 'South Indian Filter Coffee', 35)" class="px-3.5 py-1 bg-surface-container border border-brand/30 text-brand rounded-lg text-xs font-bold hover:bg-brand hover:text-white transition-all">+ ADD</button>
+                </div>
+              </div>
+            </div>
+            <img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=260&q=80" alt="Coffee" class="w-20 h-20 rounded-xl object-cover flex-shrink-0"/>
+          </div>
+
+          <!-- Special Ginger Chai -->
+          <div class="menu-item bg-surface-card rounded-2xl p-3 border border-surface-dim/50 shadow-sm flex items-center justify-between gap-3" data-id="chai">
+            <div class="flex-1 space-y-1">
+              <div class="flex items-center gap-1.5">
+                <span class="inline-flex items-center justify-center w-3 h-3 border border-veg p-0.5 rounded-[2px]"><span class="w-1.5 h-1.5 bg-veg rounded-full"></span></span>
+                <h4 class="font-semibold text-neutral-900 text-sm item-title">Special Ginger Cardamom Chai</h4>
+              </div>
+              <p class="text-xs text-neutral-500 line-clamp-2 leading-relaxed item-desc">Fresh brewed milk tea infused with crushed ginger and aromatic green elaichi.</p>
+              <div class="pt-1 flex items-center justify-between">
+                <span class="font-bold text-neutral-900 text-sm">₹30</span>
+                <div class="cart-action-container" data-id="chai">
+                  <button onclick="handleAddToCart('chai', 'Special Ginger Cardamom Chai', 30)" class="px-3.5 py-1 bg-surface-container border border-brand/30 text-brand rounded-lg text-xs font-bold hover:bg-brand hover:text-white transition-all">+ ADD</button>
+                </div>
+              </div>
+            </div>
+            <img src="https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=260&q=80" alt="Chai" class="w-20 h-20 rounded-xl object-cover flex-shrink-0"/>
+          </div>
+
+          <!-- Sukku Malli Brew -->
+          <div class="menu-item bg-surface-card rounded-2xl p-3 border border-surface-dim/50 shadow-sm flex items-center justify-between gap-3" data-id="sukkumalli">
+            <div class="flex-1 space-y-1">
+              <div class="flex items-center gap-1.5">
+                <span class="inline-flex items-center justify-center w-3 h-3 border border-veg p-0.5 rounded-[2px]"><span class="w-1.5 h-1.5 bg-veg rounded-full"></span></span>
+                <h4 class="font-semibold text-neutral-900 text-sm item-title">Sukku Malli Herbal Brew</h4>
+              </div>
+              <p class="text-xs text-neutral-500 line-clamp-2 leading-relaxed item-desc">Traditional herbal digestive brew with dry ginger, coriander seeds and palm jaggery.</p>
+              <div class="pt-1 flex items-center justify-between">
+                <div class="flex items-center gap-1.5">
+                  <span class="font-bold text-neutral-900 text-sm">₹30</span>
+                  <span class="text-[10px] bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded font-medium">Digestive</span>
+                </div>
+                <div class="cart-action-container" data-id="sukkumalli">
+                  <button onclick="handleAddToCart('sukkumalli', 'Sukku Malli Herbal Brew', 30)" class="px-3.5 py-1 bg-surface-container border border-brand/30 text-brand rounded-lg text-xs font-bold hover:bg-brand hover:text-white transition-all">+ ADD</button>
+                </div>
+              </div>
+            </div>
+            <img src="https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&w=260&q=80" alt="Sukku Malli" class="w-20 h-20 rounded-xl object-cover flex-shrink-0"/>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Sticky Floating Plate / Cart Bar -->
+    <div id="cartBar" class="fixed bottom-16 left-1/2 -translate-x-1/2 w-full max-w-[400px] px-3 z-30 transition-transform duration-300">
+      <div class="bg-brand-dark text-white rounded-2xl p-3 px-4 shadow-xl flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
+            <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/>
+              <path d="M3 6h18"/>
+              <path d="M16 10a4 4 0 0 1-8 0"/>
+            </svg>
+          </div>
+          <div>
+            <p id="cartItemsText" class="text-[11px] text-neutral-300 font-medium">0 items in plate</p>
+            <p id="cartTotalPrice" class="text-sm font-bold text-white">₹0</p>
+          </div>
+        </div>
+        <!-- Trigger Modal -->
+        <button onclick="openBillModal()" class="inline-flex items-center gap-1.5 bg-white text-brand-dark px-3.5 py-1.5 rounded-xl text-xs font-bold hover:bg-neutral-100 shadow transition-transform active:scale-95">
+          View Order &rarr;
+        </button>
+      </div>
+    </div>
+
+    <!-- Persistent Bottom Navigation Bar -->
+    <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] bg-surface/95 backdrop-blur-md border-t border-surface-dim/60 px-6 py-2.5 flex justify-between items-center z-40">
+      <a href="index.html" class="flex flex-col items-center gap-1 text-neutral-500 hover:text-brand transition-colors">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span class="text-[11px] font-medium">Home</span>
+      </a>
+      <a href="menu.html" class="flex flex-col items-center gap-1 text-brand">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>
+        <span class="text-[11px] font-bold">Menu</span>
+      </a>
+      <a href="contact.html" class="flex flex-col items-center gap-1 text-neutral-500 hover:text-brand transition-colors">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        <span class="text-[11px] font-medium">Contact</span>
+      </a>
+    </nav>
+
+    <!-- Bill Breakdown Popup Modal Sheet -->
+    <div id="billModal" class="fixed inset-0 z-50 flex items-end justify-center pointer-events-none opacity-0 transition-opacity duration-300">
+      <!-- Dimmed Backdrop -->
+      <div onclick="closeBillModal()" class="absolute inset-0 bg-black/60 backdrop-blur-xs transition-opacity"></div>
+
+      <!-- Modal Bottom Sheet -->
+      <div class="modal-sheet relative w-full max-w-[430px] bg-surface rounded-t-3xl shadow-2xl p-5 border-t border-surface-dim pointer-events-auto transform translate-y-full transition-transform duration-300 max-h-[85vh] flex flex-col">
+        
+        <!-- Sheet Handle -->
+        <div class="w-12 h-1.5 bg-neutral-300 rounded-full mx-auto mb-3"></div>
+
+        <!-- Header -->
+        <div class="flex items-center justify-between pb-3 border-b border-surface-dim/60">
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-full bg-brand-light text-brand flex items-center justify-center font-bold">
+              <span>🧾</span>
+            </div>
+            <div>
+              <h3 class="font-serif text-base font-bold text-neutral-900 leading-tight">Your Plate &amp; Bill Breakdown</h3>
+              <p class="text-[10px] text-neutral-500 font-medium">Welcome Restaurant • Table / Takeaway</p>
+            </div>
+          </div>
+          <button onclick="closeBillModal()" class="w-7 h-7 rounded-full bg-surface-container hover:bg-neutral-200 text-neutral-600 flex items-center justify-center transition-colors">
+            ✕
+          </button>
+        </div>
+
+        <!-- Scrollable Items List -->
+        <div id="modalItemsContainer" class="py-3 space-y-2.5 overflow-y-auto no-scrollbar max-h-56 divide-y divide-surface-dim/40">
+          <!-- Dynamic Items Injected Here -->
+        </div>
+
+        <!-- Purity Assurance Strip -->
+        <div class="bg-emerald-50 border border-emerald-200/80 rounded-xl px-3 py-2 my-2 flex items-center gap-2 text-emerald-900">
+          <span class="w-2 h-2 rounded-full bg-emerald-600 flex-shrink-0"></span>
+          <p class="text-[10px] font-medium leading-tight">100% Pure Veg • Steamed fresh &amp; piping hot on sanitised plantain leaf.</p>
+        </div>
+
+        <!-- Bill Calculations Table -->
+        <div class="bg-surface-card rounded-2xl p-3.5 border border-surface-dim/60 space-y-2 text-xs">
+          <div class="flex justify-between text-neutral-600">
+            <span>Items Subtotal</span>
+            <span id="modalSubtotal" class="font-semibold text-neutral-800">₹0</span>
+          </div>
+          <div class="flex justify-between text-neutral-600">
+            <span>Restaurant GST (5%)</span>
+            <span id="modalGst" class="font-semibold text-neutral-800">₹0</span>
+          </div>
+          <div class="flex justify-between text-neutral-600">
+            <span>Packaging &amp; Leaf Service</span>
+            <span id="modalPackaging" class="font-semibold text-neutral-800">₹5</span>
+          </div>
+          <div class="pt-2 border-t border-surface-dim flex justify-between items-center text-sm font-bold text-neutral-900">
+            <div>
+              <span>Grand Total</span>
+              <p class="text-[9px] text-neutral-400 font-normal">Inclusive of all taxes</p>
+            </div>
+            <span id="modalGrandTotal" class="text-base text-brand-dark font-extrabold">₹0</span>
+          </div>
+        </div>
+
+        <!-- Action CTAs -->
+        <div class="pt-3 flex gap-2">
+          <button onclick="closeBillModal()" class="w-1/3 py-2.5 rounded-xl border border-surface-dim bg-surface-container hover:bg-surface-dim/60 text-xs font-bold text-neutral-700 transition-colors">
+            + Add More
+          </button>
+          <a href="contact.html" class="flex-1 py-2.5 rounded-xl bg-brand hover:bg-brand-dark text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-lg active:scale-95 transition-all">
+            <span>Proceed to Pay / Dine-In</span> &rarr;
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Interactive JavaScript -->
+  <script>
+    const cart = {};
+
+    function updateCartUI() {
+      let totalQty = 0;
+      let totalPrice = 0;
+
+      for (const [id, item] of Object.entries(cart)) {
+        totalQty += item.qty;
+        totalPrice += item.qty * item.price;
+      }
+
+      const cartBar = document.getElementById('cartBar');
+      const itemsText = document.getElementById('cartItemsText');
+      const priceText = document.getElementById('cartTotalPrice');
+
+      itemsText.textContent = `${totalQty} item${totalQty === 1 ? '' : 's'} in plate`;
+      priceText.textContent = `₹${totalPrice}`;
+
+      if (totalQty > 0) {
+        cartBar.classList.remove('opacity-40', 'pointer-events-none');
+        cartBar.querySelector('div').classList.add('scale-[1.02]');
+        setTimeout(() => cartBar.querySelector('div').classList.remove('scale-[1.02]'), 150);
+      }
+
+      // If modal is open, update bill breakdown live
+      renderBillModal();
+    }
+
+    function renderStepper(id, name, price) {
+      const container = document.querySelector(`.cart-action-container[data-id="${id}"]`);
+      if (!container) return;
+
+      const qty = cart[id] ? cart[id].qty : 0;
+
+      if (qty === 0) {
+        container.innerHTML = `
+          <button onclick="handleAddToCart('${id}', '${name}', ${price})" class="px-3.5 py-1 bg-surface-container border border-brand/30 text-brand rounded-lg text-xs font-bold hover:bg-brand hover:text-white transition-all">
+            + ADD
+          </button>
+        `;
+      } else {
+        container.innerHTML = `
+          <div class="inline-flex items-center gap-2 bg-brand text-white rounded-lg px-2 py-0.5 shadow-sm">
+            <button onclick="handleQtyChange('${id}', -1)" class="w-5 h-5 flex items-center justify-center font-bold text-sm leading-none hover:bg-brand-dark rounded active:scale-90">&minus;</button>
+            <span class="text-xs font-extrabold min-w-[14px] text-center">${qty}</span>
+            <button onclick="handleQtyChange('${id}', 1)" class="w-5 h-5 flex items-center justify-center font-bold text-sm leading-none hover:bg-brand-dark rounded active:scale-90">&plus;</button>
+          </div>
+        `;
+      }
+    }
+
+    function handleAddToCart(id, name, price) {
+      cart[id] = { name: name, qty: 1, price: price };
+      renderStepper(id, name, price);
+      updateCartUI();
+    }
+
+    function handleQtyChange(id, delta) {
+      if (!cart[id]) return;
+      cart[id].qty += delta;
+      const { name, price } = cart[id];
+      if (cart[id].qty <= 0) {
+        delete cart[id];
+      }
+      renderStepper(id, name, price);
+      updateCartUI();
+    }
+
+    // Modal Sheet Functions
+    function openBillModal() {
+      renderBillModal();
+      const modal = document.getElementById('billModal');
+      const sheet = modal.querySelector('.modal-sheet');
+
+      modal.classList.remove('pointer-events-none', 'opacity-0');
+      modal.classList.add('opacity-100');
+      sheet.classList.remove('translate-y-full');
+      sheet.classList.add('translate-y-0');
+    }
+
+    function closeBillModal() {
+      const modal = document.getElementById('billModal');
+      const sheet = modal.querySelector('.modal-sheet');
+
+      sheet.classList.remove('translate-y-0');
+      sheet.classList.add('translate-y-full');
+      modal.classList.remove('opacity-100');
+      modal.classList.add('opacity-0');
+
+      setTimeout(() => {
+        modal.classList.add('pointer-events-none');
+      }, 300);
+    }
+
+    function renderBillModal() {
+      const container = document.getElementById('modalItemsContainer');
+      const subtotalEl = document.getElementById('modalSubtotal');
+      const gstEl = document.getElementById('modalGst');
+      const grandTotalEl = document.getElementById('modalGrandTotal');
+      const packagingEl = document.getElementById('modalPackaging');
+
+      const items = Object.entries(cart);
+
+      if (items.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-6 text-neutral-400">
+            <p class="text-2xl mb-1">🍽️</p>
+            <p class="text-xs font-semibold">Your plate is currently empty.</p>
+            <p class="text-[10px] text-neutral-400">Add dishes from the menu to see the bill summary.</p>
+          </div>
+        `;
+        subtotalEl.textContent = '₹0';
+        gstEl.textContent = '₹0';
+        packagingEl.textContent = '₹0';
+        grandTotalEl.textContent = '₹0';
+        return;
+      }
+
+      let subtotal = 0;
+      let html = '';
+
+      for (const [id, item] of items) {
+        const itemTotal = item.qty * item.price;
+        subtotal += itemTotal;
+        html += `
+          <div class="pt-2 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="inline-flex items-center justify-center w-5 h-5 rounded-md bg-brand-light text-brand text-[11px] font-extrabold border border-brand/20">
+                ${item.qty}x
+              </span>
+              <div>
+                <p class="text-xs font-bold text-neutral-900 leading-tight">${item.name}</p>
+                <p class="text-[10px] text-neutral-400">₹${item.price} each</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-xs font-bold text-neutral-900">₹${itemTotal}</span>
+              <div class="inline-flex items-center gap-1">
+                <button onclick="handleQtyChange('${id}', -1)" class="w-5 h-5 rounded bg-surface-container text-neutral-700 flex items-center justify-center text-xs font-bold hover:bg-neutral-200">&minus;</button>
+                <button onclick="handleQtyChange('${id}', 1)" class="w-5 h-5 rounded bg-surface-container text-neutral-700 flex items-center justify-center text-xs font-bold hover:bg-neutral-200">&plus;</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      const packaging = 5;
+      const gst = Math.round(subtotal * 0.05);
+      const grandTotal = subtotal + gst + packaging;
+
+      container.innerHTML = html;
+      subtotalEl.textContent = `₹${subtotal}`;
+      gstEl.textContent = `₹${gst}`;
+      packagingEl.textContent = `₹${packaging}`;
+      grandTotalEl.textContent = `₹${grandTotal}`;
+    }
+
+    // Category Filter Pills
+    document.querySelectorAll('.cat-pill').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.cat-pill').forEach(b => {
+          b.className = 'cat-pill px-4 py-1.5 rounded-full text-xs font-semibold bg-surface-card border border-surface-dim text-neutral-600 hover:bg-surface-container whitespace-nowrap';
+        });
+        btn.className = 'cat-pill active px-4 py-1.5 rounded-full text-xs font-semibold bg-emerald-900 text-white shadow-sm whitespace-nowrap';
+
+        const cat = btn.getAttribute('data-cat');
+        document.querySelectorAll('.menu-section').forEach(sec => {
+          if (cat === 'all' || sec.getAttribute('data-section') === cat) {
+            sec.style.display = 'block';
+          } else {
+            sec.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    // Live Search Filter
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      const q = e.target.value.toLowerCase().trim();
+      document.querySelectorAll('.menu-item').forEach(item => {
+        const title = item.querySelector('.item-title')?.textContent.toLowerCase() || '';
+        const desc = item.querySelector('.item-desc')?.textContent.toLowerCase() || '';
+        if (title.includes(q) || desc.includes(q)) {
+          item.style.display = '';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    });
+
+    // Initialize with 2 pre-selected items (Idly & Ven Pongal) matching original mock
+    handleAddToCart('idly', 'Idly (2 Pcs)', 45);
+    handleAddToCart('pongal', 'Ven Pongal', 75);
+  </script>
+</body>
+</html>
+

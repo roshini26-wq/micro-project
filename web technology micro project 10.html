@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome Restaurant - Menu & Live Delivery Tracking</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Newsreader (Serif) & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: { DEFAULT: '#d35400', dark: '#9c3d00', light: '#fdebd0' },
+            surface: { DEFAULT: '#fcf9f4', dim: '#dcdad5', container: '#f6f3ee', card: '#ffffff' },
+            veg: '#1e7e34'
+          },
+          fontFamily: {
+            serif: ['Newsreader', 'Georgia', 'serif'],
+            sans: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { background-color: #ece8e1; font-family: 'Plus Jakarta Sans', sans-serif; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .sheet-transition { transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease-out; }
+  </style>
+</head>
+<body class="flex justify-center min-h-screen antialiased text-neutral-800">
+  <!-- Mobile Container Wrapper (Max 430px) -->
+  <div class="w-full max-w-[430px] bg-surface min-h-screen flex flex-col relative shadow-2xl pb-32">
+
+    <!-- Active Delivery Status Bar (Pinned Top Alert) -->
+    <div id="liveOrderPill" class="bg-amber-900 text-white px-4 py-2 flex items-center justify-between text-xs cursor-pointer hover:bg-amber-950 transition-colors shadow-inner" onclick="openTrackingModal()">
+      <div class="flex items-center gap-2">
+        <span class="relative flex h-2 w-2">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+        </span>
+        <span class="font-semibold text-amber-100">Order #WR-8042 Live</span>
+        <span class="text-[10px] bg-amber-800/80 px-2 py-0.5 rounded text-amber-200">Murugan is 18m away</span>
+      </div>
+      <span class="text-xs font-bold text-amber-300 flex items-center gap-1">Track &rarr;</span>
+    </div>
+
+    <!-- Main Header -->
+    <header class="sticky top-0 z-30 bg-surface/95 backdrop-blur-md px-4 py-3 border-b border-surface-dim/50 flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <div class="w-10 h-10 rounded-full bg-brand/10 border border-brand/20 flex items-center justify-center text-brand text-lg font-serif font-black shadow-sm">
+          WR
+        </div>
+        <div>
+          <div class="flex items-center gap-1.5">
+            <h1 class="font-serif text-lg font-bold text-neutral-900 leading-tight">Welcome Restaurant</h1>
+            <span class="inline-flex items-center justify-center w-3.5 h-3.5 border border-veg p-0.5 rounded-[2px]" title="100% Pure Veg"><span class="w-1.5 h-1.5 bg-veg rounded-full"></span></span>
+          </div>
+          <p class="text-[10px] tracking-wider uppercase font-semibold text-neutral-500">Pure Veg &bull; South Mada St, Mylapore</p>
+        </div>
+      </div>
+      <button onclick="openTrackingModal()" class="w-9 h-9 rounded-full bg-brand/10 text-brand flex items-center justify-center font-bold text-sm hover:bg-brand hover:text-white transition-colors" title="View Active Delivery">
+        🛵
+      </button>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="px-4 py-3 space-y-4 flex-1">
+      <!-- Search Input -->
+      <div class="flex items-center gap-2 bg-surface-container border border-surface-dim rounded-2xl px-3 py-2.5 shadow-xs">
+        <svg class="w-4 h-4 text-neutral-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input id="searchInput" type="text" placeholder="Search ghee roast dosa, ven pongal, filter coffee..." class="bg-transparent text-xs text-neutral-800 placeholder-neutral-400 focus:outline-none w-full font-medium" />
+      </div>
+
+      <!-- Category Filter Tabs -->
+      <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1" id="categoryTabs">
+        <button onclick="filterCategory('all')" class="cat-pill px-4 py-1.5 rounded-full text-xs font-semibold bg-brand text-white shadow-xs whitespace-nowrap">All Items</button>
+        <button onclick="filterCategory('tiffin')" class="cat-pill px-4 py-1.5 rounded-full text-xs font-semibold bg-surface-card border border-surface-dim text-neutral-600 hover:bg-surface-container whitespace-nowrap">Tiffin Specials</button>
+        <button onclick="filterCategory('snacks')" class="cat-pill px-4 py-1.5 rounded-full text-xs font-semibold bg-surface-card border border-surface-dim text-neutral-600 hover:bg-surface-container whitespace-nowrap">Evening Snacks</button>
+        <button onclick="filterCategory('beverages')" class="cat-pill px-4 py-1.5 rounded-full text-xs font-semibold bg-surface-card border border-surface-dim text-neutral-600 hover:bg-surface-container whitespace-nowrap">Filter Coffee & Drinks</button>
+      </div>
+
+      <!-- Sattvic Pure Veg Banner -->
+      <div class="bg-emerald-50 border border-emerald-200/80 rounded-2xl p-3 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center text-sm">🌿</div>
+          <div>
+            <h4 class="text-xs font-bold text-emerald-950">100% Sattvic & Pure Vegetarian</h4>
+            <p class="text-[10px] text-emerald-700">Artisanal cow ghee & cold-pressed sesame oil</p>
+          </div>
+        </div>
+        <span class="text-[9px] font-bold uppercase bg-white text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-md shadow-xs">Hygienic</span>
+      </div>
+
+      <!-- Menu Items List -->
+      <section class="space-y-3" id="menuItemsContainer">
+        <h3 class="font-serif text-base font-bold text-neutral-900">Breakfast & Tiffin Favourites</h3>
+        
+        <!-- Dish 1: Idly -->
+        <div class="menu-item bg-surface-card rounded-2xl p-3 border border-surface-dim/60 shadow-xs flex items-center justify-between gap-3" data-cat="tiffin">
+          <div class="flex-1 space-y-1">
+            <div class="flex items-center gap-1.5">
+              <span class="inline-flex items-center justify-center w-3 h-3 border border-veg p-0.5 rounded-[2px]"><span class="w-1.5 h-1.5 bg-veg rounded-full"></span></span>
+              <h4 class="font-semibold text-neutral-900 text-sm item-title">Idly (2 Pcs)</h4>
+            </div>
+            <p class="text-[11px] text-neutral-500 item-desc leading-snug">Steamed fluffy rice cakes with traditional tiffin sambar & 3 chutneys.</p>
+            <div class="pt-1.5 flex items-center justify-between">
+              <span class="font-bold text-neutral-900 text-sm">₹45</span>
+              <div id="btnContainer_idly">
+                <button onclick="handleAddToCart('idly', 'Idly (2 Pcs)', 45)" class="px-3.5 py-1 bg-surface-container border border-brand/40 text-brand rounded-lg text-xs font-bold hover:bg-brand hover:text-white transition-all">+ ADD</button>
+              </div>
+            </div>
+          </div>
+          <img src="https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=220&q=80" alt="Idly" class="w-16 h-16 rounded-xl object-cover border border-surface-dim/50" />
+        </div>
+
+        <!-- Dish 2: Ven Pongal -->
+        <div class="menu-item bg-surface-card rounded-2xl p-3 border border-surface-dim/60 shadow-xs flex items-center justify-between gap-3" data-cat="tiffin">
+          <div class="flex-1 space-y-1">
+            <div class="flex items-center gap-1.5">
+              <span class="inline-flex items-center justify-center w-3 h-3 border border-veg p-0.5 rounded-[2px]"><span class="w-1.5 h-1.5 bg-veg rounded-full"></span></span>
+              <h4 class="font-semibold text-neutral-900 text-sm item-title">Ven Pongal (Ghee Rich)</h4>
+            </div>
+            <p class="text-[11px] text-neutral-500 item-desc leading-snug">Piping hot rice & lentils tempered in pure cow ghee, cashews & cumin.</p>
+            <div class="pt-1.5 flex items-center justify-between">
+              <span class="font-bold text-neutral-900 text-sm">₹75</span>
+              <div id="btnContainer_pongal">
+                <button onclick="handleAddToCart('pongal', 'Ven Pongal (Ghee Rich)', 75)" class="px-3.5 py-1 bg-surface-container border border-brand/40 text-brand rounded-lg text-xs font-bold hover:bg-brand hover:text-white transition-all">+ ADD</button>
+              </div>
+            </div>
+          </div>
+          <img src="https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=220&q=80" alt="Ven Pongal" class="w-16 h-16 rounded-xl object-cover border border-surface-dim/50" />
+        </div>
+
+        <!-- Dish 3: Ghee Roast Dosa -->
+        <div class="menu-item bg-surface-card rounded-2xl p-3 border border-surface-dim/60 shadow-xs flex items-center justify-between gap-3" data-cat="tiffin">
+          <div class="flex-1 space-y-1">
+            <div class="flex items-center gap-1.5">
+              <span class="inline-flex items-center justify-center w-3 h-3 border border-veg p-0.5 rounded-[2px]"><span class="w-1.5 h-1.5 bg-veg rounded-full"></span></span>
+              <h4 class="font-semibold text-neutral-900 text-sm item-title">Ghee Roast Masala Dosa</h4>
+            </div>
+            <p class="text-[11px] text-neutral-500 item-desc leading-snug">Crispy golden crepe crisped in ghee, filled with spiced potato masala.</p>
+            <div class="pt-1.5 flex items-center justify-between">
+              <span class="font-bold text-neutral-900 text-sm">₹85</span>
+              <div id="btnContainer_dosa">
+                <button onclick="handleAddToCart('dosa', 'Ghee Roast Masala Dosa', 85)" class="px-3.5 py-1 bg-surface-container border border-brand/40 text-brand rounded-lg text-xs font-bold hover:bg-brand hover:text-white transition-all">+ ADD</button>
+              </div>
+            </div>
+          </div>
+          <img src="https://images.unsplash.com/photo-1668236543090-82eba5ee5976?auto=format&fit=crop&w=220&q=80" alt="Dosa" class="w-16 h-16 rounded-xl object-cover border border-surface-dim/50" />
+        </div>
+
+        <!-- Dish 4: Degree Filter Coffee -->
+        <div class="menu-item bg-surface-card rounded-2xl p-3 border border-surface-dim/60 shadow-xs flex items-center justify-between gap-3" data-cat="beverages">
+          <div class="flex-1 space-y-1">
+            <div class="flex items-center gap-1.5">
+              <span class="inline-flex items-center justify-center w-3 h-3 border border-veg p-0.5 rounded-[2px]"><span class="w-1.5 h-1.5 bg-veg rounded-full"></span></span>
+              <h4 class="font-semibold text-neutral-900 text-sm item-title">Degree Filter Coffee (Flask)</h4>
+            </div>
+            <p class="text-[11px] text-neutral-500 item-desc leading-snug">Freshly brewed South Indian chicory decoction frothed with whole cow milk.</p>
+            <div class="pt-1.5 flex items-center justify-between">
+              <span class="font-bold text-neutral-900 text-sm">₹35</span>
+              <div id="btnContainer_coffee">
+                <button onclick="handleAddToCart('coffee', 'Degree Filter Coffee (Flask)', 35)" class="px-3.5 py-1 bg-surface-container border border-brand/40 text-brand rounded-lg text-xs font-bold hover:bg-brand hover:text-white transition-all">+ ADD</button>
+              </div>
+            </div>
+          </div>
+          <img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=220&q=80" alt="Filter Coffee" class="w-16 h-16 rounded-xl object-cover border border-surface-dim/50" />
+        </div>
+
+        <!-- Dish 5: Medu Vada -->
+        <div class="menu-item bg-surface-card rounded-2xl p-3 border border-surface-dim/60 shadow-xs flex items-center justify-between gap-3" data-cat="snacks">
+          <div class="flex-1 space-y-1">
+            <div class="flex items-center gap-1.5">
+              <span class="inline-flex items-center justify-center w-3 h-3 border border-veg p-0.5 rounded-[2px]"><span class="w-1.5 h-1.5 bg-veg rounded-full"></span></span>
+              <h4 class="font-semibold text-neutral-900 text-sm item-title">Medu Vada (1 Pc)</h4>
+            </div>
+            <p class="text-[11px] text-neutral-500 item-desc leading-snug">Crisp fried lentil donut with ginger, peppercorns & curry leaves.</p>
+            <div class="pt-1.5 flex items-center justify-between">
+              <span class="font-bold text-neutral-900 text-sm">₹30</span>
+              <div id="btnContainer_vada">
+                <button onclick="handleAddToCart('vada', 'Medu Vada (1 Pc)', 30)" class="px-3.5 py-1 bg-surface-container border border-brand/40 text-brand rounded-lg text-xs font-bold hover:bg-brand hover:text-white transition-all">+ ADD</button>
+              </div>
+            </div>
+          </div>
+          <img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=220&q=80" alt="Medu Vada" class="w-16 h-16 rounded-xl object-cover border border-surface-dim/50" />
+        </div>
+      </section>
+    </main>
+
+    <!-- FLOATING ORDER TRAY (3-Way Switcher & Quick Checkout) -->
+    <div id="cartBar" class="fixed bottom-16 left-1/2 -translate-x-1/2 w-full max-w-[410px] px-3 z-30 transition-transform duration-300">
+      <div class="bg-neutral-900 text-white rounded-2xl p-2.5 shadow-2xl space-y-2 border border-neutral-700">
+        <!-- Mode Tabs -->
+        <div class="flex items-center justify-between bg-white/10 rounded-xl px-2 py-1 text-[10px]">
+          <div class="flex items-center gap-1 bg-black/40 p-0.5 rounded-lg">
+            <button onclick="setOrderMode('dinein')" id="trayDineInBtn" class="px-2 py-0.5 rounded-md font-bold text-white/70 hover:text-white transition-all">🍽️ Dine-In</button>
+            <button onclick="setOrderMode('takeaway')" id="trayTakeawayBtn" class="px-2 py-0.5 rounded-md font-bold text-white/70 hover:text-white transition-all">🛍️ Takeaway</button>
+            <button onclick="setOrderMode('delivery')" id="trayDeliveryBtn" class="px-2 py-0.5 rounded-md font-bold bg-brand text-white shadow-xs transition-all">🛵 Delivery</button>
+          </div>
+          <span id="trayPurityTag" class="text-[10px] text-amber-200 font-medium">&bull; Doorstep Insulated</span>
+        </div>
+
+        <!-- Total Price & CTA -->
+        <div class="flex items-center justify-between px-1">
+          <div>
+            <p id="cartItemsText" class="text-[10px] text-neutral-300">3 items in plate</p>
+            <p id="cartTotalPrice" class="text-sm font-extrabold text-white">₹155</p>
+          </div>
+          <button onclick="openBillModal()" class="inline-flex items-center gap-1.5 bg-brand hover:bg-brand-dark text-white px-3.5 py-1.5 rounded-xl text-xs font-bold shadow-md transition-transform active:scale-95">
+            View Order &amp; Bill &rarr;
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Navigation Bar -->
+    <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] bg-surface/95 backdrop-blur-md border-t border-surface-dim/60 px-6 py-2.5 flex justify-between items-center z-40">
+      <a href="index.html" class="flex flex-col items-center gap-1 text-neutral-500 hover:text-neutral-900"><span class="text-sm">🏠</span><span class="text-[10px] font-medium">Home</span></a>
+      <a href="menu.html" class="flex flex-col items-center gap-1 text-brand font-bold"><span class="text-sm">🍽️</span><span class="text-[10px]">Menu</span></a>
+      <button onclick="openTrackingModal()" class="flex flex-col items-center gap-1 text-neutral-500 hover:text-neutral-900"><span class="text-sm">📍</span><span class="text-[10px] font-medium">Track</span></button>
+      <a href="contact.html" class="flex flex-col items-center gap-1 text-neutral-500 hover:text-neutral-900"><span class="text-sm">📞</span><span class="text-[10px] font-medium">Contact</span></a>
+    </nav>
+
+    <!-- ============================================================== -->
+    <!-- MODAL 1: BILL BREAKDOWN & COMPLETE CHECKOUT MODAL             -->
+    <!-- ============================================================== -->
+    <div id="billModal" class="fixed inset-0 z-50 flex items-end justify-center pointer-events-none opacity-0 transition-opacity duration-300">
+      <div onclick="closeBillModal()" class="absolute inset-0 bg-black/60 backdrop-blur-xs"></div>
+      <div class="sheet-transition relative w-full max-w-[430px] bg-surface rounded-t-3xl shadow-2xl p-4 border-t border-surface-dim pointer-events-auto transform translate-y-full max-h-[92vh] flex flex-col">
+        <!-- Handle -->
+        <div class="w-12 h-1 bg-neutral-300 rounded-full mx-auto mb-2"></div>
+
+        <div class="flex items-center justify-between pb-2 border-b border-surface-dim/60">
+          <h3 class="font-serif text-base font-bold text-neutral-900">Your Plate &amp; Checkout</h3>
+          <button onclick="closeBillModal()" class="w-7 h-7 rounded-full bg-surface-container text-neutral-600 hover:bg-surface-dim flex items-center justify-center text-xs font-bold">✕</button>
+        </div>
+
+        <div class="overflow-y-auto no-scrollbar py-2 space-y-3">
+          <!-- 3-Way Fulfillment Selector Inside Modal -->
+          <div class="bg-surface-card p-3 rounded-2xl border border-surface-dim/70 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-neutral-800">Fulfillment Mode:</span>
+              <div class="flex bg-surface-container p-0.5 rounded-xl border border-surface-dim text-[11px]">
+                <button onclick="setOrderMode('dinein')" id="modalDineInTab" class="px-2.5 py-0.5 rounded-lg font-bold text-neutral-600">🍽️ Dine-In</button>
+                <button onclick="setOrderMode('takeaway')" id="modalTakeawayTab" class="px-2.5 py-0.5 rounded-lg font-bold text-neutral-600">🛍️ Takeaway</button>
+                <button onclick="setOrderMode('delivery')" id="modalDeliveryTab" class="px-2.5 py-0.5 rounded-lg font-bold bg-brand text-white shadow-xs">🛵 Delivery</button>
+              </div>
+            </div>
+
+            <!-- Table Number Selector (Dine-in only) -->
+            <div id="tableSelectorBox" class="hidden pt-2 border-t border-surface-dim/40 flex items-center justify-between">
+              <span class="text-[11px] font-bold text-neutral-700">Select Table:</span>
+              <div class="flex gap-1.5">
+                <button onclick="selectTable('T-01')" class="table-chip px-2.5 py-0.5 rounded text-[11px] font-bold bg-surface-container border border-surface-dim text-neutral-700">T-01</button>
+                <button onclick="selectTable('T-04')" class="table-chip active px-2.5 py-0.5 rounded text-[11px] font-bold bg-brand text-white">T-04</button>
+                <button onclick="selectTable('T-08')" class="table-chip px-2.5 py-0.5 rounded text-[11px] font-bold bg-surface-container border border-surface-dim text-neutral-700">T-08</button>
+              </div>
+            </div>
+
+            <!-- Takeaway Pickup Token (Takeaway only) -->
+            <div id="takeawayInfoBox" class="hidden pt-2 border-t border-surface-dim/40 flex items-center justify-between">
+              <span class="text-[11px] text-neutral-600">Counter Pickup Token:</span>
+              <span class="text-xs font-mono font-bold bg-amber-100 text-amber-900 px-2 py-0.5 rounded border border-amber-300">#TK-48 (5-10m)</span>
+            </div>
+
+            <!-- Doorstep Delivery & Saved Address Presets -->
+            <div id="deliveryAddressBox" class="pt-2 border-t border-surface-dim/40 space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-[11px] font-bold text-neutral-800">Saved Address Presets:</span>
+                <span class="text-[9px] bg-emerald-100 text-emerald-800 font-bold px-1.5 py-0.2 rounded">✓ Serviceable</span>
+              </div>
+              
+              <!-- 3 Presets -->
+              <div class="grid grid-cols-3 gap-1.5 text-[10px]">
+                <button onclick="selectAddressPreset('home')" id="presetBtn_home" class="preset-btn p-1.5 rounded-xl border border-surface-dim bg-surface-container text-left transition-all">
+                  <p class="font-bold text-neutral-900">🏠 Home</p>
+                  <p class="text-[9px] text-neutral-500">Mylapore &bull; ~25m</p>
+                </button>
+                <button onclick="selectAddressPreset('mom')" id="presetBtn_mom" class="preset-btn active p-1.5 rounded-xl border border-brand bg-brand-light text-left transition-all">
+                  <p class="font-bold text-neutral-900">🏡 Mom's House</p>
+                  <p class="text-[9px] text-neutral-500">Sannidhi St &bull; ~18m</p>
+                </button>
+                <button onclick="selectAddressPreset('office')" id="presetBtn_office" class="preset-btn p-1.5 rounded-xl border border-surface-dim bg-surface-container text-left transition-all">
+                  <p class="font-bold text-neutral-900">🏢 Office</p>
+                  <p class="text-[9px] text-neutral-500">Tidel Park &bull; ~32m</p>
+                </button>
+              </div>
+
+              <!-- Address Details Inputs -->
+              <div class="space-y-1.5 pt-1">
+                <div class="flex gap-2">
+                  <div class="w-1/3">
+                    <label class="text-[9px] font-bold text-neutral-600">PIN Code</label>
+                    <input id="deliveryPin" type="text" value="600004" class="w-full bg-surface-container border border-surface-dim rounded-lg px-2 py-1 text-xs font-mono font-bold" />
+                  </div>
+                  <div class="w-2/3">
+                    <label class="text-[9px] font-bold text-neutral-600">Contact Number</label>
+                    <input id="deliveryPhone" type="text" value="+91 98400 54321" class="w-full bg-surface-container border border-surface-dim rounded-lg px-2 py-1 text-xs font-mono font-bold" />
+                  </div>
+                </div>
+                <div>
+                  <label class="text-[9px] font-bold text-neutral-600">Flat No., Building &amp; Landmark</label>
+                  <input id="deliveryStreet" type="text" value="Flat 2B, Lakshmi Apts, Kapaleeshwarar Sannidhi St, Mylapore" class="w-full bg-surface-container border border-surface-dim rounded-lg px-2 py-1 text-xs font-medium" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Items Breakdown List -->
+          <div id="modalItemsContainer" class="divide-y divide-surface-dim/40 bg-surface-card p-3 rounded-2xl border border-surface-dim/70"></div>
+
+          <!-- Promo Code Input -->
+          <div class="bg-surface-card rounded-2xl p-3 border border-surface-dim/80 space-y-1.5">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-neutral-800">Apply Promo Coupon</span>
+              <span id="couponStatusBadge" class="text-[10px] text-neutral-500 font-medium">WELCOME20 / TIFFIN10</span>
+            </div>
+            <div class="flex gap-1.5">
+              <input id="couponInput" type="text" placeholder="e.g. WELCOME20" class="flex-1 bg-surface-container border border-surface-dim rounded-xl px-2.5 py-1 text-xs font-mono font-bold uppercase placeholder-neutral-400" />
+              <button onclick="applyPromoCode()" class="px-3 py-1 bg-neutral-900 text-white rounded-xl text-xs font-bold hover:bg-neutral-800">Apply</button>
+            </div>
+            <div class="flex gap-1 text-[9px]">
+              <button onclick="quickApplyCoupon('WELCOME20')" class="px-2 py-0.5 rounded-md bg-amber-50 text-amber-900 border border-amber-200 font-bold hover:bg-amber-100">WELCOME20 (20% OFF)</button>
+              <button onclick="quickApplyCoupon('TIFFIN10')" class="px-2 py-0.5 rounded-md bg-amber-50 text-amber-900 border border-amber-200 font-bold hover:bg-amber-100">TIFFIN10 (-₹10)</button>
+            </div>
+          </div>
+
+          <!-- Tip / Gratuity Selector -->
+          <div class="bg-surface-card rounded-2xl p-3 border border-surface-dim/80 space-y-1.5">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-neutral-800">🪙 Kitchen Staff Tip</span>
+              <span id="tipSelectedBadge" class="text-xs font-bold text-brand bg-brand-light px-2 py-0.5 rounded">₹0</span>
+            </div>
+            <div class="grid grid-cols-4 gap-1 text-center text-xs">
+              <button onclick="selectTip('none')" id="tipBtn_none" class="tip-btn active p-1.5 rounded-lg border border-brand bg-brand-light font-bold">No Tip</button>
+              <button onclick="selectTip('5%')" id="tipBtn_5" class="tip-btn p-1.5 rounded-lg border border-surface-dim bg-surface-container font-bold">5%</button>
+              <button onclick="selectTip('10%')" id="tipBtn_10" class="tip-btn p-1.5 rounded-lg border border-surface-dim bg-surface-container font-bold">10%</button>
+              <button onclick="selectTip('round')" id="tipBtn_round" class="tip-btn p-1.5 rounded-lg border border-surface-dim bg-surface-container font-bold">Round Up</button>
+            </div>
+          </div>
+
+          <!-- Split Bill Calculator -->
+          <div class="bg-surface-card rounded-2xl p-3 border border-surface-dim/80 space-y-1.5">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-neutral-800">👥 Split Bill with Friends</span>
+              <div class="flex items-center gap-1.5 bg-surface-container px-2 py-0.5 rounded border border-surface-dim text-xs">
+                <button onclick="changeSplitCount(-1)" class="font-bold px-1 text-neutral-700 hover:text-black">&minus;</button>
+                <span id="splitCountDisplay" class="font-bold min-w-[14px] text-center">2</span>
+                <span class="text-[9px] text-neutral-500">friends</span>
+                <button onclick="changeSplitCount(1)" class="font-bold px-1 text-neutral-700 hover:text-black">&plus;</button>
+              </div>
+            </div>
+            <div class="bg-amber-50 border border-amber-200/80 rounded-xl p-2 flex items-center justify-between">
+              <span class="text-[11px] text-amber-950">Each friend pays: <strong id="perPersonAmount" class="font-serif text-sm text-brand font-black">₹108</strong></span>
+              <button onclick="copySplitBreakdown()" class="px-2 py-0.5 bg-white border border-amber-300 text-brand rounded text-[10px] font-bold shadow-xs hover:bg-neutral-50">📤 Share Split</button>
+            </div>
+          </div>
+
+          <!-- Total Calculation Breakdown -->
+          <div class="bg-surface-card rounded-2xl p-3 border border-surface-dim/70 space-y-1.5 text-xs">
+            <div class="flex justify-between text-neutral-600"><span>Item Total</span><span id="modalSubtotal" class="font-semibold text-neutral-900">₹200</span></div>
+            <div id="modalDiscountRow" class="hidden flex justify-between text-emerald-800 font-bold"><span>Promo Discount</span><span id="modalDiscountAmount">-₹0</span></div>
+            <div class="flex justify-between text-neutral-600"><span>Sattvic Packaging &amp; Taxes (GST 5%)</span><span id="modalGst" class="font-semibold text-neutral-900">₹15</span></div>
+            <div class="flex justify-between text-neutral-600"><span id="modalDeliveryFeeLabel">Delivery Partner Fee</span><span id="modalDeliveryFee" class="font-semibold text-emerald-800 font-bold">FREE</span></div>
+            <div class="flex justify-between text-emerald-800 font-bold"><span>Staff Tip</span><span id="modalTipAmount">₹0</span></div>
+            <div class="pt-2 border-t border-surface-dim flex justify-between items-center text-sm font-bold text-neutral-900">
+              <span>Grand Total</span>
+              <span id="modalGrandTotal" class="text-lg text-brand font-black">₹215</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sheet Action Footer -->
+        <div class="pt-2 flex gap-2 border-t border-surface-dim/40">
+          <button onclick="closeBillModal()" class="w-1/3 py-2.5 rounded-xl border border-surface-dim bg-surface-container text-xs font-bold text-neutral-700 hover:bg-surface-dim">Add More</button>
+          <button id="payCheckoutBtn" onclick="handleCheckoutClick()" class="flex-1 py-2.5 rounded-xl bg-brand hover:bg-brand-dark text-white text-xs font-bold shadow-md transition-all">Pay ₹215 via UPI &rarr;</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- MODAL 2: UPI PAYMENT SIMULATION MODAL                         -->
+    <!-- ============================================================== -->
+    <div id="upiModal" class="fixed inset-0 z-50 flex items-center justify-center pointer-events-none opacity-0 transition-opacity duration-300 px-4">
+      <div onclick="closeUpiModal()" class="absolute inset-0 bg-black/75"></div>
+      <div class="relative w-full max-w-[360px] bg-white rounded-3xl p-5 text-center space-y-3 pointer-events-auto transform scale-95 transition-transform duration-300 shadow-2xl">
+        <div class="flex justify-between items-center pb-2 border-b border-surface-dim">
+          <h4 class="font-bold text-xs text-neutral-900 flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span> UPI Instant Payment
+          </h4>
+          <button onclick="closeUpiModal()" class="w-6 h-6 rounded-full bg-surface-container text-xs font-bold text-neutral-500 hover:bg-surface-dim">✕</button>
+        </div>
+        
+        <div class="bg-surface-container rounded-xl p-2 text-xs">
+          <p class="font-serif font-bold text-neutral-900 text-sm">Welcome Restaurant (Pure Veg)</p>
+          <p class="text-[10px] text-neutral-500 font-mono">UPI ID: welcomebhavan@icici</p>
+        </div>
+
+        <!-- Realistic QR Presentation -->
+        <div class="border-2 border-dashed border-brand/40 rounded-2xl p-4 flex flex-col items-center bg-neutral-50">
+          <div class="w-40 h-40 bg-white p-2 rounded-xl shadow-inner border border-neutral-200 flex flex-col items-center justify-center">
+            <!-- Simulated QR pattern with SVG -->
+            <svg class="w-full h-full text-neutral-900" viewBox="0 0 100 100" fill="currentColor">
+              <path d="M0 0h30v30H0zm4 4h22v22H4zm4 4h14v14H8zM70 0h30v30H70zm4 4h22v22H74zm4 4h14v14H78zM0 70h30v30H0zm4 4h22v22H4zm4 4h14v14H8zM40 10h10v10H40zm10 10h10v10H50zm-10 20h20v10H40zm25 15h15v10H65zm15-15h10v15H80zm-40 20h10v20H40zm20 10h15v10H60zm20 0h10v10H80zm-10 10h20v10H70z"/>
+            </svg>
+          </div>
+          <p class="mt-2 text-xs font-bold text-neutral-900">Scan using any UPI App to Pay</p>
+          <p id="dynamicQrAmountLabel" class="text-base font-serif font-black text-brand">₹215</p>
+          <p id="upiTimer" class="text-[10px] text-amber-800 font-mono font-semibold">Expires in: 04:59</p>
+        </div>
+
+        <button onclick="simulateUpiSuccess()" class="w-full py-2.5 bg-emerald-800 hover:bg-emerald-900 text-white rounded-xl text-xs font-bold shadow-md transition-all">
+          ✓ Simulate Payment Success
+        </button>
+      </div>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- MODAL 3: FULL LIVE DELIVERY ORDER TRACKING SCREEN MODAL        -->
+    <!-- ============================================================== -->
+    <div id="trackingModal" class="fixed inset-0 z-50 flex items-end justify-center pointer-events-none opacity-0 transition-opacity duration-300">
+      <div onclick="closeTrackingModal()" class="absolute inset-0 bg-black/60 backdrop-blur-xs"></div>
+      <div class="sheet-transition relative w-full max-w-[430px] bg-surface rounded-t-3xl shadow-2xl p-4 border-t border-surface-dim pointer-events-auto transform translate-y-full max-h-[95vh] flex flex-col">
+        <!-- Handle -->
+        <div class="w-12 h-1 bg-neutral-300 rounded-full mx-auto mb-2"></div>
+
+        <!-- Top Tracking Header -->
+        <div class="flex items-center justify-between pb-3 border-b border-surface-dim/60">
+          <div class="flex items-center gap-2">
+            <button onclick="closeTrackingModal()" class="w-8 h-8 rounded-full bg-surface-container text-neutral-700 flex items-center justify-center font-bold hover:bg-surface-dim">
+              &larr;
+            </button>
+            <div>
+              <div class="flex items-center gap-1.5">
+                <h3 class="font-serif font-bold text-neutral-900 text-base">Order #WR-8042</h3>
+                <span class="text-[9px] bg-emerald-100 text-emerald-800 font-bold px-1.5 py-0.2 rounded-full uppercase tracking-wider">● Live</span>
+              </div>
+              <p class="text-[10px] text-neutral-500">Placed today at 12:42 PM &bull; 3 items</p>
+            </div>
+          </div>
+          <div class="text-right">
+            <span class="text-[9px] uppercase tracking-wider font-bold text-amber-800">Estimated Delivery</span>
+            <p class="font-serif font-extrabold text-brand text-base leading-tight">1:14 PM</p>
+          </div>
+        </div>
+
+        <!-- Scrollable Tracking Content -->
+        <div class="overflow-y-auto no-scrollbar py-3 space-y-3">
+          
+          <!-- Stylized Chennai Delivery Route Map Card -->
+          <div class="relative rounded-2xl overflow-hidden border border-surface-dim bg-sky-50 shadow-sm p-4">
+            <div class="absolute inset-0 opacity-15 pointer-events-none bg-[radial-gradient(#0284c7_1px,transparent_1px)] [background-size:16px_16px]"></div>
+            
+            <div class="relative z-10 flex flex-col gap-5">
+              <!-- Origin Pin -->
+              <div class="flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-brand ring-4 ring-brand/20"></span>
+                <span class="text-xs font-bold text-neutral-800">Welcome Restaurant, South Mada</span>
+              </div>
+
+              <!-- Route Line & Valet Pin -->
+              <div class="pl-1.5 border-l-2 border-dashed border-amber-600 space-y-2 py-1 ml-1.5">
+                <div class="inline-flex items-center gap-1.5 bg-amber-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow-md ml-3 animate-pulse">
+                  <span>⚡ 18 mins (1.2 km away)</span>
+                </div>
+              </div>
+
+              <!-- Destination Pin -->
+              <div class="flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-emerald-600 ring-4 ring-emerald-600/20"></span>
+                <span class="text-xs font-bold text-neutral-800">Mom's House (Lakshmi Apts)</span>
+              </div>
+            </div>
+
+            <div class="mt-4 pt-2 border-t border-sky-100 flex items-center justify-between text-[10px] text-neutral-600">
+              <span class="flex items-center gap-1 text-emerald-800 font-semibold">🌱 Eco-Friendly EV Scooter</span>
+              <button onclick="showToast('Map recentered on Murugan')" class="px-2 py-0.5 bg-white border border-neutral-200 rounded font-bold shadow-2xs hover:bg-neutral-50">Recenter</button>
+            </div>
+          </div>
+
+          <!-- Step-by-Step Meal Journey Tracker -->
+          <div class="bg-surface-card rounded-2xl p-3 border border-surface-dim space-y-3">
+            <div class="flex items-center justify-between">
+              <h4 class="font-serif font-bold text-neutral-900 text-sm">Meal Journey</h4>
+              <span class="text-[10px] bg-emerald-100 text-emerald-900 font-bold px-2 py-0.5 rounded">Sattvic Hot Pack</span>
+            </div>
+
+            <div class="space-y-3 text-xs">
+              <!-- Step 1 -->
+              <div class="flex items-start gap-2.5">
+                <span class="w-5 h-5 rounded-full bg-emerald-700 text-white flex items-center justify-center text-[10px] font-bold">✓</span>
+                <div class="flex-1">
+                  <div class="flex justify-between font-bold text-neutral-900">
+                    <span>Order Confirmed</span>
+                    <span class="text-[10px] text-neutral-500 font-normal">12:42 PM</span>
+                  </div>
+                  <p class="text-[11px] text-neutral-500">Welcome Restaurant kitchen accepted your Sattvic order.</p>
+                </div>
+              </div>
+
+              <!-- Step 2 -->
+              <div class="flex items-start gap-2.5">
+                <span class="w-5 h-5 rounded-full bg-emerald-700 text-white flex items-center justify-center text-[10px] font-bold">✓</span>
+                <div class="flex-1">
+                  <div class="flex justify-between font-bold text-neutral-900">
+                    <span>Prepared &amp; Eco-Packed</span>
+                    <span class="text-[10px] text-neutral-500 font-normal">12:48 PM</span>
+                  </div>
+                  <p class="text-[11px] text-neutral-500">Piping hot ghee roasts &amp; tiffin safely lined with fresh banana leaves.</p>
+                </div>
+              </div>
+
+              <!-- Step 3 (Active) -->
+              <div class="flex items-start gap-2.5">
+                <span class="w-5 h-5 rounded-full bg-brand text-white flex items-center justify-center text-[10px] font-bold animate-pulse">🛵</span>
+                <div class="flex-1">
+                  <div class="flex justify-between font-bold text-brand">
+                    <span class="flex items-center gap-1.5">On the Way <span class="text-[9px] bg-brand-light text-brand px-1.5 rounded">In Transit</span></span>
+                    <span class="text-[10px] text-brand">12:56 PM</span>
+                  </div>
+                  <p class="text-[11px] text-neutral-600">Murugan S. has picked up your meal in a sealed thermal bag.</p>
+                </div>
+              </div>
+
+              <!-- Step 4 -->
+              <div class="flex items-start gap-2.5 opacity-60">
+                <span class="w-5 h-5 rounded-full bg-neutral-300 text-neutral-700 flex items-center justify-center text-[10px] font-bold">4</span>
+                <div class="flex-1">
+                  <div class="flex justify-between font-bold text-neutral-700">
+                    <span>Delivered to Doorstep</span>
+                    <span class="text-[10px] text-neutral-500 font-normal">Est. 1:14 PM</span>
+                  </div>
+                  <p class="text-[11px] text-neutral-500">Doorstep handoff at Lakshmi Apts, Kapaleeshwarar Sannidhi.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Delivery Valet Contact Card -->
+          <div class="bg-surface-card rounded-2xl p-3 border border-surface-dim space-y-2.5">
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] uppercase tracking-wider font-bold text-neutral-500">Your Delivery Valet</span>
+              <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-1.5 py-0.2 rounded">● 100% Pure Veg Fleet</span>
+            </div>
+            
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <div class="w-11 h-11 rounded-full bg-amber-200 border-2 border-brand/30 flex items-center justify-center font-bold text-amber-900 text-sm shadow-xs">
+                  MS
+                </div>
+                <div>
+                  <h5 class="font-bold text-neutral-900 text-sm">Murugan S.</h5>
+                  <p class="text-[10px] text-neutral-500">1,240+ deliveries &bull; Electric EV Scooter</p>
+                  <p class="text-[9px] font-mono font-bold text-neutral-600">TN 07 BZ 4421</p>
+                </div>
+              </div>
+              <span class="px-2 py-0.5 bg-amber-50 text-amber-900 border border-amber-200 font-bold text-xs rounded-md">★ 4.9</span>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 pt-1">
+              <a href="tel:+919840000000" class="py-2 rounded-xl bg-surface-container border border-surface-dim text-neutral-800 font-bold text-xs flex items-center justify-center gap-1.5 hover:bg-neutral-200">
+                📞 Call Murugan
+              </a>
+              <button onclick="showToast('Messaging Murugan: Door bell working')" class="py-2 rounded-xl bg-surface-container border border-surface-dim text-neutral-800 font-bold text-xs flex items-center justify-center gap-1.5 hover:bg-neutral-200">
+                💬 Send Note
+              </button>
+            </div>
+          </div>
+
+          <!-- Destination & Delivery Notes -->
+          <div class="bg-surface-card rounded-2xl p-3 border border-surface-dim space-y-1.5 text-xs">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-neutral-900 flex items-center gap-1">📍 Mom's House 🏡</span>
+              <span class="text-[9px] bg-surface-container text-neutral-600 px-1.5 rounded">Saved Tag</span>
+            </div>
+            <p class="text-[11px] text-neutral-600">Flat 2B, Lakshmi Apts, Kapaleeshwarar Sannidhi St, Mylapore, Chennai - 600004</p>
+            <div class="bg-surface-container p-2 rounded-xl text-[10px] text-neutral-700 italic border border-surface-dim/60">
+              "Ring bell once and leave parcel on door stool. Handle plantain leaf packages upright."
+            </div>
+          </div>
+
+          <!-- Order Summary in Tracking -->
+          <div class="bg-surface-card rounded-2xl p-3 border border-surface-dim space-y-1.5 text-xs">
+            <div class="flex justify-between font-bold text-neutral-900 pb-1 border-b border-surface-dim/50">
+              <span>Order Details (3 items)</span>
+              <span class="text-brand">₹215 Paid (UPI)</span>
+            </div>
+            <div class="flex justify-between text-neutral-600 text-[11px]"><span>2x Idly (2 Pcs)</span><span>₹90</span></div>
+            <div class="flex justify-between text-neutral-600 text-[11px]"><span>1x Ven Pongal (Ghee Rich)</span><span>₹75</span></div>
+            <div class="flex justify-between text-neutral-600 text-[11px]"><span>1x Degree Filter Coffee (Flask)</span><span>₹35</span></div>
+            <div class="pt-1 text-[10px] text-emerald-800 flex items-center gap-1">
+              <span>✓ Includes 3 chutneys, sambar &amp; banana leaf packing</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tracking Close / Back Action -->
+        <div class="pt-2 border-t border-surface-dim/40">
+          <button onclick="closeTrackingModal()" class="w-full py-2.5 rounded-xl bg-neutral-900 text-white text-xs font-bold hover:bg-black transition-all">
+            Return to Menu
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notification Toast Element -->
+    <div id="toastNotification" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 bg-neutral-900 text-white px-4 py-2 rounded-full text-xs font-medium opacity-0 pointer-events-none transition-all duration-300 shadow-xl">
+      Notification
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- JAVASCRIPT APPLICATION LOGIC                                  -->
+  <!-- ============================================================== -->
+  <script>
+    // Global Application State
+    const state = {
+      cart: {},
+      orderMode: 'delivery', // 'dinein' | 'takeaway' | 'delivery'
+      selectedTable: 'T-04',
+      selectedTipMode: 'none',
+      splitCount: 2,
+      appliedCoupon: null,
+      activeAddressPreset: 'mom',
+      addressPresets: {
+        home: {
+          title: "Home",
+          street: "#14, South Mada Street, Mylapore",
+          pin: "600004",
+          phone: "+91 98400 12345",
+          distance: "4.5 km",
+          time: "25 mins"
+        },
+        mom: {
+          title: "Mom's House",
+          street: "Flat 2B, Lakshmi Apts, Kapaleeshwarar Sannidhi St",
+          pin: "600004",
+          phone: "+91 98400 54321",
+          distance: "3.8 km",
+          time: "18 mins"
+        },
+        office: {
+          title: "Office / Work",
+          street: "Tidel Park, 4th Floor, Module 402, Tharamani",
+          pin: "600113",
+          phone: "+91 98400 12345",
+          distance: "6.2 km",
+          time: "32 mins"
+        }
+      }
+    };
+
+    // 1. Toast Notification Helper
+    function showToast(msg) {
+      const toast = document.getElementById('toastNotification');
+      if (!toast) return;
+      toast.textContent = msg;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      toast.classList.add('opacity-100');
+      setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 2200);
+    }
+
+    // 2. Cart Operations
+    function handleAddToCart(id, name, price) {
+      if (!state.cart[id]) {
+        state.cart[id] = { name, price, qty: 1 };
+      } else {
+        state.cart[id].qty += 1;
+      }
+      renderItemButtons();
+      updateCartUI();
+      showToast(`Added ${name} to plate`);
+    }
+
+    function handleRemoveFromCart(id) {
+      if (state.cart[id]) {
+        state.cart[id].qty -= 1;
+        if (state.cart[id].qty <= 0) {
+          delete state.cart[id];
+        }
+        renderItemButtons();
+        updateCartUI();
+      }
+    }
+
+    function renderItemButtons() {
+      const items = ['idly', 'pongal', 'dosa', 'coffee', 'vada'];
+      items.forEach(id => {
+        const container = document.getElementById(`btnContainer_${id}`);
+        if (!container) return;
+        const item = state.cart[id];
+        if (item && item.qty > 0) {
+          container.innerHTML = `
+            <div class="flex items-center gap-1.5 bg-brand text-white rounded-lg px-2 py-0.5 text-xs font-bold shadow-xs">
+              <button onclick="handleRemoveFromCart('${id}')" class="px-1 hover:text-amber-200">&minus;</button>
+              <span class="min-w-[14px] text-center">${item.qty}</span>
+              <button onclick="handleAddToCart('${id}', '${item.name}', ${item.price})" class="px-1 hover:text-amber-200">&plus;</button>
+            </div>
+          `;
+        } else {
+          // Re-create default + ADD button
+          let defaultName = 'Item', defaultPrice = 50;
+          if (id === 'idly') { defaultName = 'Idly (2 Pcs)'; defaultPrice = 45; }
+          if (id === 'pongal') { defaultName = 'Ven Pongal (Ghee Rich)'; defaultPrice = 75; }
+          if (id === 'dosa') { defaultName = 'Ghee Roast Masala Dosa'; defaultPrice = 85; }
+          if (id === 'coffee') { defaultName = 'Degree Filter Coffee (Flask)'; defaultPrice = 35; }
+          if (id === 'vada') { defaultName = 'Medu Vada (1 Pc)'; defaultPrice = 30; }
+
+          container.innerHTML = `
+            <button onclick="handleAddToCart('${id}', '${defaultName}', ${defaultPrice})" class="px-3.5 py-1 bg-surface-container border border-brand/40 text-brand rounded-lg text-xs font-bold hover:bg-brand hover:text-white transition-all">+ ADD</button>
+          `;
+        }
+      });
+    }
+
+    // 3. Mathematical Calculations
+    function calculateSubtotal() {
+      let sub = 0;
+      for (const item of Object.values(state.cart)) {
+        sub += item.qty * item.price;
+      }
+      return sub;
+    }
+
+    function calculateDiscount(sub) {
+      if (!state.appliedCoupon) return 0;
+      if (state.appliedCoupon.type === 'percent') {
+        return Math.round(sub * state.appliedCoupon.val);
+      }
+      return state.appliedCoupon.val;
+    }
+
+    function calculateFulfillmentFee() {
+      if (state.orderMode === 'delivery') return 0; // Special Offer: Free Delivery for Mylapore
+      if (state.orderMode === 'takeaway') return 10;
+      return 0;
+    }
+
+    function calculateTip(netSub, fee) {
+      if (state.selectedTipMode === '5%') return Math.max(1, Math.round(netSub * 0.05));
+      if (state.selectedTipMode === '10%') return Math.max(2, Math.round(netSub * 0.10));
+      if (state.selectedTipMode === 'round') {
+        const raw = netSub + Math.round(netSub * 0.05) + fee;
+        const rem = raw % 10;
+        return rem === 0 ? 10 : (10 - rem);
+      }
+      return 0;
+    }
+
+    function calculateGrandTotal() {
+      const sub = calculateSubtotal();
+      if (sub === 0) return 0;
+      const discount = calculateDiscount(sub);
+      const netSub = Math.max(0, sub - discount);
+      const gst = Math.round(netSub * 0.05);
+      const fee = calculateFulfillmentFee();
+      const tip = calculateTip(netSub, fee);
+      return netSub + gst + fee + tip;
+    }
+
+    // 4. UI Synchronizer
+    function updateCartUI() {
+      let totalQty = 0, rawPrice = 0;
+      for (const item of Object.values(state.cart)) {
+        totalQty += item.qty;
+        rawPrice += item.qty * item.price;
+      }
+
+      // Sticky tray updates
+      document.getElementById('cartItemsText').textContent = `${totalQty} item${totalQty === 1 ? '' : 's'} in plate`;
+      document.getElementById('cartTotalPrice').textContent = `₹${rawPrice}`;
+
+      // Calculations
+      const sub = calculateSubtotal();
+      const discount = calculateDiscount(sub);
+      const gst = Math.round(Math.max(0, sub - discount) * 0.05);
+      const fee = calculateFulfillmentFee();
+      const tip = calculateTip(Math.max(0, sub - discount), fee);
+      const grand = calculateGrandTotal();
+
+      document.getElementById('modalSubtotal').textContent = `₹${sub}`;
+      document.getElementById('modalGrandTotal').textContent = `₹${grand}`;
+      document.getElementById('dynamicQrAmountLabel').textContent = `₹${grand}`;
+      document.getElementById('payCheckoutBtn').textContent = `Pay ₹${grand} via UPI →`;
+      document.getElementById('modalGst').textContent = `₹${gst}`;
+      document.getElementById('modalTipAmount').textContent = `₹${tip}`;
+      document.getElementById('tipSelectedBadge').textContent = `₹${tip}`;
+
+      const discountRow = document.getElementById('modalDiscountRow');
+      const discountAmt = document.getElementById('modalDiscountAmount');
+      if (discount > 0) {
+        discountRow.classList.remove('hidden');
+        discountAmt.textContent = `-₹${discount}`;
+      } else {
+        discountRow.classList.add('hidden');
+      }
+
+      // Split bill
+      const per = state.splitCount > 0 ? Math.round(grand / state.splitCount) : grand;
+      document.getElementById('perPersonAmount').textContent = `₹${per}`;
+
+      // Render items inside modal sheet
+      const container = document.getElementById('modalItemsContainer');
+      if (Object.keys(state.cart).length === 0) {
+        container.innerHTML = '<p class="text-xs text-neutral-400 text-center py-2">Your plate is currently empty.</p>';
+      } else {
+        let html = '';
+        for (const [id, item] of Object.entries(state.cart)) {
+          html += `
+            <div class="py-1.5 flex justify-between items-center text-xs">
+              <div>
+                <span class="font-semibold text-neutral-900">${item.name}</span>
+                <span class="text-[10px] text-neutral-500 block">₹${item.price} each</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-neutral-900">₹${item.qty * item.price}</span>
+                <div class="flex items-center gap-1 bg-surface-container border border-surface-dim px-1.5 py-0.5 rounded">
+                  <button onclick="handleRemoveFromCart('${id}')" class="font-bold text-neutral-700 px-1 hover:text-black">&minus;</button>
+                  <span class="text-xs font-bold min-w-[12px] text-center">${item.qty}</span>
+                  <button onclick="handleAddToCart('${id}', '${item.name}', ${item.price})" class="font-bold text-neutral-700 px-1 hover:text-black">&plus;</button>
+                </div>
+              </div>
+            </div>
+          `;
+        }
+        container.innerHTML = html;
+      }
+    }
+
+    // 5. Fulfillment Switcher
+    function setOrderMode(mode) {
+      state.orderMode = mode;
+
+      // Update tray buttons
+      const btnIn = document.getElementById('trayDineInBtn');
+      const btnTk = document.getElementById('trayTakeawayBtn');
+      const btnDl = document.getElementById('trayDeliveryBtn');
+
+      [btnIn, btnTk, btnDl].forEach(b => {
+        b.className = 'px-2 py-0.5 rounded-md font-bold text-white/70 hover:text-white transition-all';
+      });
+      if (mode === 'dinein') btnIn.className = 'px-2 py-0.5 rounded-md font-bold bg-white text-neutral-900 shadow-xs transition-all';
+      if (mode === 'takeaway') btnTk.className = 'px-2 py-0.5 rounded-md font-bold bg-white text-neutral-900 shadow-xs transition-all';
+      if (mode === 'delivery') btnDl.className = 'px-2 py-0.5 rounded-md font-bold bg-brand text-white shadow-xs transition-all';
+
+      // Update modal tabs
+      const mIn = document.getElementById('modalDineInTab');
+      const mTk = document.getElementById('modalTakeawayTab');
+      const mDl = document.getElementById('modalDeliveryTab');
+      [mIn, mTk, mDl].forEach(b => {
+        b.className = 'px-2.5 py-0.5 rounded-lg font-bold text-neutral-600';
+      });
+      if (mode === 'dinein') mIn.className = 'px-2.5 py-0.5 rounded-lg font-bold bg-brand text-white shadow-xs';
+      if (mode === 'takeaway') mTk.className = 'px-2.5 py-0.5 rounded-lg font-bold bg-brand text-white shadow-xs';
+      if (mode === 'delivery') mDl.className = 'px-2.5 py-0.5 rounded-lg font-bold bg-brand text-white shadow-xs';
+
+      // Visibility toggles
+      document.getElementById('tableSelectorBox').classList.toggle('hidden', mode !== 'dinein');
+      document.getElementById('takeawayInfoBox').classList.toggle('hidden', mode !== 'takeaway');
+      document.getElementById('deliveryAddressBox').classList.toggle('hidden', mode !== 'delivery');
+
+      document.getElementById('trayPurityTag').textContent = mode === 'dinein' ? '• Banana Leaf Dining' : (mode === 'takeaway' ? '• Eco Leaf Box' : '• Doorstep Insulated');
+      document.getElementById('modalDeliveryFeeLabel').textContent = mode === 'delivery' ? 'Delivery Partner Fee' : (mode === 'takeaway' ? 'Eco Packaging' : 'Leaf Dining Service');
+      document.getElementById('modalDeliveryFee').textContent = mode === 'delivery' ? 'FREE' : (mode === 'takeaway' ? '₹10' : 'FREE');
+
+      updateCartUI();
+      showToast(`Switched to ${mode.toUpperCase()} mode`);
+    }
+
+    function selectTable(tbl) {
+      state.selectedTable = tbl;
+      document.querySelectorAll('.table-chip').forEach(c => {
+        c.className = 'table-chip px-2.5 py-0.5 rounded text-[11px] font-bold bg-surface-container border border-surface-dim text-neutral-700';
+      });
+      event?.target?.classList.add('bg-brand', 'text-white');
+      showToast(`Selected Table ${tbl}`);
+    }
+
+    // 6. Address Presets
+    function selectAddressPreset(key) {
+      const p = state.addressPresets[key];
+      if (!p) return;
+      state.activeAddressPreset = key;
+
+      document.getElementById('deliveryPin').value = p.pin;
+      document.getElementById('deliveryPhone').value = p.phone;
+      document.getElementById('deliveryStreet').value = p.street;
+
+      document.querySelectorAll('.preset-btn').forEach(b => {
+        b.className = 'preset-btn p-1.5 rounded-xl border border-surface-dim bg-surface-container text-left transition-all';
+      });
+      const activeBtn = document.getElementById(`presetBtn_${key}`);
+      if (activeBtn) {
+        activeBtn.className = 'preset-btn active p-1.5 rounded-xl border border-brand bg-brand-light text-left transition-all';
+      }
+
+      showToast(`Preset: ${p.title} selected (${p.distance})`);
+    }
+
+    // 7. Promo Codes
+    function applyPromoCode() {
+      const val = document.getElementById('couponInput').value.trim().toUpperCase();
+      quickApplyCoupon(val);
+    }
+
+    function quickApplyCoupon(code) {
+      if (code === 'WELCOME20') {
+        state.appliedCoupon = { code: 'WELCOME20', type: 'percent', val: 0.20 };
+        document.getElementById('couponStatusBadge').textContent = 'WELCOME20 Applied (20% OFF)';
+        showToast('Promo WELCOME20 applied! 20% discount');
+      } else if (code === 'TIFFIN10') {
+        state.appliedCoupon = { code: 'TIFFIN10', type: 'flat', val: 10 };
+        document.getElementById('couponStatusBadge').textContent = 'TIFFIN10 Applied (₹10 OFF)';
+        showToast('Promo TIFFIN10 applied! ₹10 flat off');
+      } else {
+        state.appliedCoupon = null;
+        document.getElementById('couponStatusBadge').textContent = 'Invalid Coupon';
+        showToast('Invalid Coupon Code');
+      }
+      updateCartUI();
+    }
+
+    // 8. Tip Selection
+    function selectTip(mode) {
+      state.selectedTipMode = mode;
+      document.querySelectorAll('.tip-btn').forEach(b => {
+        b.className = 'tip-btn p-1.5 rounded-lg border border-surface-dim bg-surface-container font-bold';
+      });
+      const b = document.getElementById(`tipBtn_${mode}`);
+      if (b) b.className = 'tip-btn active p-1.5 rounded-lg border border-brand bg-brand-light font-bold';
+      updateCartUI();
+    }
+
+    // 9. Split Bill
+    function changeSplitCount(delta) {
+      state.splitCount = Math.max(1, Math.min(10, state.splitCount + delta));
+      document.getElementById('splitCountDisplay').textContent = state.splitCount;
+      updateCartUI();
+    }
+
+    function copySplitBreakdown() {
+      const grand = calculateGrandTotal();
+      const per = Math.round(grand / state.splitCount);
+      const text = `Welcome Restaurant Order:\nTotal: ₹${grand}\nFriends: ${state.splitCount}\nShare: ₹${per}/person`;
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(text);
+        showToast(`Copied! ₹${per}/person share breakdown`);
+      } else {
+        showToast(`₹${per}/person calculated`);
+      }
+    }
+
+    // 10. Modals Management
+    function openBillModal() {
+      const m = document.getElementById('billModal');
+      m.classList.remove('pointer-events-none', 'opacity-0');
+      m.querySelector('.sheet-transition').classList.remove('translate-y-full');
+      updateCartUI();
+    }
+    function closeBillModal() {
+      const m = document.getElementById('billModal');
+      m.classList.add('opacity-0', 'pointer-events-none');
+      m.querySelector('.sheet-transition').classList.add('translate-y-full');
+    }
+
+    function handleCheckoutClick() {
+      closeBillModal();
+      openUpiModal();
+    }
+
+    let upiCountdown;
+    function openUpiModal() {
+      const u = document.getElementById('upiModal');
+      u.classList.remove('pointer-events-none', 'opacity-0');
+      u.querySelector('.scale-95').classList.remove('scale-95');
+
+      // 5 min countdown
+      clearInterval(upiCountdown);
+      let sec = 299;
+      upiCountdown = setInterval(() => {
+        sec--;
+        const m = String(Math.floor(sec / 60)).padStart(2, '0');
+        const s = String(sec % 60).padStart(2, '0');
+        document.getElementById('upiTimer').textContent = `Expires in: ${m}:${s}`;
+        if (sec <= 0) {
+          clearInterval(upiCountdown);
+          closeUpiModal();
+          showToast('Payment QR code timed out');
+        }
+      }, 1000);
+    }
+
+    function closeUpiModal() {
+      clearInterval(upiCountdown);
+      const u = document.getElementById('upiModal');
+      u.classList.add('pointer-events-none', 'opacity-0');
+      u.querySelector('div.relative').classList.add('scale-95');
+    }
+
+    function simulateUpiSuccess() {
+      closeUpiModal();
+      showToast('✓ Payment Received! Connecting with Live Tracking...');
+      setTimeout(() => {
+        openTrackingModal();
+      }, 700);
+    }
+
+    function openTrackingModal() {
+      const t = document.getElementById('trackingModal');
+      t.classList.remove('pointer-events-none', 'opacity-0');
+      t.querySelector('.sheet-transition').classList.remove('translate-y-full');
+    }
+
+    function closeTrackingModal() {
+      const t = document.getElementById('trackingModal');
+      t.classList.add('opacity-0', 'pointer-events-none');
+      t.querySelector('.sheet-transition').classList.add('translate-y-full');
+    }
+
+    // 11. Category Filtering & Search Filter
+    function filterCategory(cat) {
+      document.querySelectorAll('.cat-pill').forEach(p => {
+        p.className = 'cat-pill px-4 py-1.5 rounded-full text-xs font-semibold bg-surface-card border border-surface-dim text-neutral-600 hover:bg-surface-container whitespace-nowrap';
+      });
+      event?.target?.classList.remove('bg-surface-card', 'text-neutral-600', 'border');
+      event?.target?.classList.add('bg-brand', 'text-white');
+
+      document.querySelectorAll('.menu-item').forEach(item => {
+        if (cat === 'all' || item.dataset.cat === cat) {
+          item.style.display = 'flex';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    }
+
+    // Search input listener
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      const q = e.target.value.toLowerCase();
+      document.querySelectorAll('.menu-item').forEach(item => {
+        const title = item.querySelector('.item-title')?.textContent.toLowerCase() || '';
+        const desc = item.querySelector('.item-desc')?.textContent.toLowerCase() || '';
+        item.style.display = (title.includes(q) || desc.includes(q)) ? 'flex' : 'none';
+      });
+    });
+
+    // 12. Initial Load State
+    document.addEventListener('DOMContentLoaded', () => {
+      // Pre-fill cart to match the established canvas state
+      handleAddToCart('idly', 'Idly (2 Pcs)', 45);
+      state.cart['idly'].qty = 2; // 2x Idly = ₹90
+      handleAddToCart('pongal', 'Ven Pongal (Ghee Rich)', 75);
+      handleAddToCart('coffee', 'Degree Filter Coffee (Flask)', 35);
+      
+      renderItemButtons();
+      updateCartUI();
+    });
+  </script>
+</body>
+</html>

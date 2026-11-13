@@ -1,0 +1,457 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome Restaurant - Contact &amp; Reservations</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts: Newsreader & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              DEFAULT: '#b44a05',
+              dark: '#873300',
+              light: '#ffeedd',
+            },
+            surface: {
+              DEFAULT: '#fcf9f4',
+              dim: '#dcdad5',
+              container: '#f6f3ee',
+              card: '#ffffff'
+            },
+            veg: '#1e7e34'
+          },
+          fontFamily: {
+            serif: ['Newsreader', 'Georgia', 'serif'],
+            sans: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #e9e6df;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .font-serif {
+      font-family: 'Newsreader', Georgia, serif;
+    }
+  </style>
+</head>
+<body class="flex justify-center min-h-screen">
+
+  <!-- Mobile Container (Max 430px) -->
+  <div class="w-full max-w-[430px] bg-surface min-h-screen flex flex-col relative shadow-2xl pb-24">
+
+    <!-- Top App Bar / Header -->
+    <header class="sticky top-0 z-30 bg-surface/95 backdrop-blur-md px-4 py-3 border-b border-surface-dim/40 flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <a href="index.html" class="w-10 h-10 rounded-full bg-brand-light flex items-center justify-center text-brand border border-brand/20 shadow-sm overflow-hidden">
+          <svg class="w-6 h-6 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8h1a4 4 0 0 1 0 8h-1"/>
+            <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/>
+            <line x1="6" y1="1" x2="6" y2="4"/>
+            <line x1="10" y1="1" x2="10" y2="4"/>
+            <line x1="14" y1="1" x2="14" y2="4"/>
+          </svg>
+        </a>
+        <div>
+          <div class="flex items-center gap-1.5">
+            <h1 class="font-serif text-lg font-bold text-neutral-900 leading-tight">Welcome Restaurant</h1>
+            <!-- Veg Badge Symbol -->
+            <span class="inline-flex items-center justify-center w-3.5 h-3.5 border border-veg p-0.5 rounded-[2px]" title="100% Pure Veg">
+              <span class="w-1.5 h-1.5 bg-veg rounded-full"></span>
+            </span>
+          </div>
+          <p class="text-[10px] tracking-wider uppercase font-semibold text-neutral-500">CONTACT &amp; CATERING</p>
+        </div>
+      </div>
+      <button class="w-9 h-9 rounded-full bg-brand text-white flex items-center justify-center shadow hover:bg-brand-dark transition-colors">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+      </button>
+    </header>
+
+    <!-- Main Content -->
+    <main class="px-4 py-4 space-y-4">
+
+      <!-- Welcoming Intro Card -->
+      <section class="bg-surface-card rounded-2xl p-4 border border-surface-dim/60 shadow-sm flex items-start gap-3">
+        <div class="w-10 h-10 rounded-full bg-emerald-50 text-emerald-800 flex items-center justify-center flex-shrink-0 mt-0.5">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+        </div>
+        <div class="space-y-1.5">
+          <h2 class="font-serif text-lg font-bold text-neutral-900 leading-tight">Visit Us or Get in Touch</h2>
+          <p class="text-xs text-neutral-600 leading-relaxed">
+            Authentic wood-pressed South Indian vegetarian traditions served fresh daily. We warmly await your arrival.
+          </p>
+          <span class="inline-flex items-center gap-1.5 text-[10px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-700"></span> 100% Pure Vegetarian &amp; Sattvic Clean
+          </span>
+        </div>
+      </section>
+
+      <!-- Instant Action CTAs -->
+      <div class="grid grid-cols-2 gap-2.5">
+        <a href="tel:+919876543210" class="flex items-center justify-center gap-2.5 bg-brand hover:bg-brand-dark text-white p-3 rounded-2xl shadow transition-transform active:scale-95">
+          <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+          </svg>
+          <div class="text-left">
+            <p class="text-[10px] uppercase font-bold text-white/80 leading-none">Call Us</p>
+            <p class="text-xs font-bold leading-tight pt-0.5">+91 98765 43210</p>
+          </div>
+        </a>
+
+        <a href="https://wa.me/919876543210" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center gap-2.5 bg-emerald-800 hover:bg-emerald-900 text-white p-3 rounded-2xl shadow transition-transform active:scale-95">
+          <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
+          <div class="text-left">
+            <p class="text-[10px] uppercase font-bold text-white/80 leading-none">WhatsApp Us</p>
+            <p class="text-xs font-bold leading-tight pt-0.5">Bulk &amp; Catering</p>
+          </div>
+        </a>
+      </div>
+
+      <!-- Location & Direction Map Card -->
+      <section class="bg-surface-card rounded-2xl border border-surface-dim/60 shadow-sm overflow-hidden">
+        <!-- Visual Map Preview -->
+        <div class="relative h-40 bg-neutral-200">
+          <img 
+            src="https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=600&q=80" 
+            alt="Welcome Restaurant Map Location" 
+            class="w-full h-full object-cover opacity-80"
+          />
+          <div class="absolute inset-0 bg-neutral-900/10 flex items-center justify-center">
+            <div class="bg-white/95 px-3 py-1.5 rounded-full shadow-lg border border-surface-dim/50 flex items-center gap-1.5 text-xs font-bold text-neutral-800">
+              <svg class="w-4 h-4 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+              <span>Gandhi Circle Landmark</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-4 space-y-3">
+          <div class="flex items-start gap-2.5">
+            <div class="w-8 h-8 rounded-full bg-brand-light text-brand flex items-center justify-center flex-shrink-0 mt-0.5">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+              </svg>
+            </div>
+            <div>
+              <h3 class="font-bold text-neutral-900 text-sm">Welcome Restaurant</h3>
+              <p class="text-xs text-neutral-600 leading-relaxed pt-0.5">
+                42, Temple Road, Near Clock Tower, Gandhi Circle, Chennai – 600001
+              </p>
+              <p class="text-[11px] text-brand-dark font-medium pt-1">
+                Landmark: Opposite Sri Murugan Temple Arch
+              </p>
+            </div>
+          </div>
+
+          <a 
+            href="https://maps.google.com" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            class="w-full py-2.5 px-4 rounded-xl bg-surface-container hover:bg-surface-dim/50 border border-surface-dim/80 text-neutral-800 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors shadow-xs"
+          >
+            <svg class="w-4 h-4 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="3 11 22 2 13 21 11 13 3 11"/>
+            </svg>
+            Get Directions (Google Maps)
+          </a>
+        </div>
+      </section>
+
+      <!-- Service Hours & Batches -->
+      <section class="bg-surface-card rounded-2xl p-4 border border-surface-dim/60 shadow-sm space-y-3">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <svg class="w-4 h-4 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+            <h3 class="font-bold text-neutral-900 text-sm">Service Hours &amp; Batches</h3>
+          </div>
+          <span class="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-700 animate-pulse"></span> Open Today
+          </span>
+        </div>
+
+        <div class="space-y-2">
+          <!-- Batch 1 -->
+          <div class="flex items-center justify-between p-2.5 rounded-xl bg-surface-container border border-surface-dim/40">
+            <div class="flex items-center gap-2.5">
+              <span class="text-base">🥐</span>
+              <div>
+                <p class="text-xs font-bold text-neutral-900">Morning Tiffin</p>
+                <p class="text-[10px] text-neutral-500">Idli, Medu Vada, Pongal &amp; Kaapi</p>
+              </div>
+            </div>
+            <span class="text-xs font-bold text-brand-dark">06:30 – 11:30 AM</span>
+          </div>
+
+          <!-- Batch 2 -->
+          <div class="flex items-center justify-between p-2.5 rounded-xl bg-surface-container border border-surface-dim/40">
+            <div class="flex items-center gap-2.5">
+              <span class="text-base">🍃</span>
+              <div>
+                <div class="flex items-center gap-1">
+                  <p class="text-xs font-bold text-neutral-900">Lunch Meals</p>
+                  <span class="text-[9px] bg-emerald-800 text-white px-1 rounded uppercase font-bold">Leaf</span>
+                </div>
+                <p class="text-[10px] text-neutral-500">Full South Indian Banana Leaf Feast</p>
+              </div>
+            </div>
+            <span class="text-xs font-bold text-brand-dark">12:00 – 03:30 PM</span>
+          </div>
+
+          <!-- Batch 3 -->
+          <div class="flex items-center justify-between p-2.5 rounded-xl bg-surface-container border border-surface-dim/40">
+            <div class="flex items-center gap-2.5">
+              <span class="text-base">🥟</span>
+              <div>
+                <p class="text-xs font-bold text-neutral-900">Evening Snacks</p>
+                <p class="text-[10px] text-neutral-500">Hot Bajjis, Onion Bonda &amp; Chai</p>
+              </div>
+            </div>
+            <span class="text-xs font-bold text-brand-dark">03:30 – 07:00 PM</span>
+          </div>
+
+          <!-- Batch 4 -->
+          <div class="flex items-center justify-between p-2.5 rounded-xl bg-surface-container border border-surface-dim/40">
+            <div class="flex items-center gap-2.5">
+              <span class="text-base">🥞</span>
+              <div>
+                <p class="text-xs font-bold text-neutral-900">Dinner Tiffin</p>
+                <p class="text-[10px] text-neutral-500">Crispy Roast Dosas, Uthappam &amp; Parotta</p>
+              </div>
+            </div>
+            <span class="text-xs font-bold text-brand-dark">07:00 – 10:30 PM</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Table Reservation & Catering Form -->
+      <section class="bg-surface-card rounded-2xl p-4 border border-surface-dim/60 shadow-sm space-y-3.5">
+        <div class="space-y-1">
+          <div class="flex items-center gap-2 text-brand">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 21V5a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v16"/>
+              <path d="M2 21h20"/>
+              <path d="M7 8h10"/>
+              <path d="M7 12h10"/>
+            </svg>
+            <h3 class="font-bold text-neutral-900 text-sm">Book Table or Catering</h3>
+          </div>
+          <p class="text-xs text-neutral-500">
+            Planning a family lunch or an auspicious private event? Drop your request below.
+          </p>
+        </div>
+
+        <form action="#" method="POST" onsubmit="event.preventDefault(); alert('Inquiry received! We will call back shortly.');" class="space-y-3">
+          <!-- Name Input -->
+          <div>
+            <label class="block text-[11px] font-bold text-neutral-700 uppercase tracking-wider mb-1">
+              Your Name *
+            </label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-neutral-400">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                  <circle cx="12" cy="7" r="4"/>
+                </svg>
+              </span>
+              <input 
+                type="text" 
+                required 
+                placeholder="e.g. S. Ramanathan" 
+                class="w-full pl-9 pr-3 py-2 text-xs bg-surface-container border border-surface-dim/80 rounded-xl text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-brand"
+              />
+            </div>
+          </div>
+
+          <!-- Phone Input -->
+          <div>
+            <label class="block text-[11px] font-bold text-neutral-700 uppercase tracking-wider mb-1">
+              Phone Number *
+            </label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-neutral-400">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                </svg>
+              </span>
+              <input 
+                type="tel" 
+                required 
+                placeholder="+91 98765 00000" 
+                class="w-full pl-9 pr-3 py-2 text-xs bg-surface-container border border-surface-dim/80 rounded-xl text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-brand"
+              />
+            </div>
+          </div>
+
+          <!-- Date & Guest Count Row -->
+          <div class="grid grid-cols-2 gap-2.5">
+            <div>
+              <label class="block text-[11px] font-bold text-neutral-700 uppercase tracking-wider mb-1">
+                Date &amp; Time *
+              </label>
+              <input 
+                type="datetime-local" 
+                required 
+                class="w-full px-2.5 py-2 text-xs bg-surface-container border border-surface-dim/80 rounded-xl text-neutral-800 focus:outline-none focus:border-brand"
+              />
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-neutral-700 uppercase tracking-wider mb-1">
+                Number of Guests
+              </label>
+              <select class="w-full px-2.5 py-2 text-xs bg-surface-container border border-surface-dim/80 rounded-xl text-neutral-800 focus:outline-none focus:border-brand">
+                <option value="2">2 Persons</option>
+                <option value="4" selected>4 Persons</option>
+                <option value="6">6 Persons</option>
+                <option value="8">8+ (Family Table)</option>
+                <option value="catering">Bulk / Catering (25+)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Special Requests -->
+          <div>
+            <label class="block text-[11px] font-bold text-neutral-700 uppercase tracking-wider mb-1">
+              Special Requests / Occasion
+            </label>
+            <textarea 
+              rows="2" 
+              placeholder="Traditional banana leaf seating, spice preference, birthday celebration, etc." 
+              class="w-full p-2.5 text-xs bg-surface-container border border-surface-dim/80 rounded-xl text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-brand"
+            ></textarea>
+          </div>
+
+          <button 
+            type="submit" 
+            class="w-full py-2.5 bg-brand hover:bg-brand-dark text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 shadow transition-transform active:scale-98"
+          >
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="22" y1="2" x2="11" y2="13"/>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+            </svg>
+            Send Inquiry / Book Table
+          </button>
+        </form>
+      </section>
+
+      <!-- Restaurant Amenities -->
+      <section class="bg-surface-card rounded-2xl p-4 border border-surface-dim/60 shadow-sm space-y-2.5">
+        <div class="flex items-center gap-2 text-brand">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+          </svg>
+          <h3 class="font-bold text-neutral-900 text-sm">Restaurant Amenities</h3>
+        </div>
+
+        <div class="flex flex-wrap gap-2 pt-1">
+          <span class="inline-flex items-center gap-1.5 bg-surface-container border border-surface-dim/70 px-2.5 py-1.5 rounded-xl text-xs font-semibold text-neutral-800">
+            <span>🅿️</span> Valet Parking Available
+          </span>
+          <span class="inline-flex items-center gap-1.5 bg-surface-container border border-surface-dim/70 px-2.5 py-1.5 rounded-xl text-xs font-semibold text-neutral-800">
+            <span>❄️</span> AC Family Dining Hall
+          </span>
+          <span class="inline-flex items-center gap-1.5 bg-surface-container border border-surface-dim/70 px-2.5 py-1.5 rounded-xl text-xs font-semibold text-neutral-800">
+            <span>🍃</span> Authentic Banana Leaf Service
+          </span>
+          <span class="inline-flex items-center gap-1.5 bg-surface-container border border-surface-dim/70 px-2.5 py-1.5 rounded-xl text-xs font-semibold text-neutral-800">
+            <span>🛵</span> Available on Swiggy &amp; Zomato
+          </span>
+          <span class="inline-flex items-center gap-1.5 bg-surface-container border border-surface-dim/70 px-2.5 py-1.5 rounded-xl text-xs font-semibold text-neutral-800">
+            <span>♿</span> Wheelchair Friendly
+          </span>
+        </div>
+      </section>
+
+      <!-- Heritage Slogan Footer Card -->
+      <section class="text-center py-3 space-y-2">
+        <div class="flex items-center justify-center gap-3">
+          <a href="#" class="w-8 h-8 rounded-full bg-surface-card border border-surface-dim/60 text-neutral-600 flex items-center justify-center hover:text-brand shadow-xs">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+              <circle cx="12" cy="13" r="4"/>
+            </svg>
+          </a>
+          <a href="#" class="w-8 h-8 rounded-full bg-surface-card border border-surface-dim/60 text-neutral-600 flex items-center justify-center hover:text-brand shadow-xs">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="18" cy="5" r="3"/>
+              <circle cx="6" cy="12" r="3"/>
+              <circle cx="18" cy="19" r="3"/>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+            </svg>
+          </a>
+          <a href="tel:+919876543210" class="w-8 h-8 rounded-full bg-surface-card border border-surface-dim/60 text-neutral-600 flex items-center justify-center hover:text-brand shadow-xs">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+            </svg>
+          </a>
+        </div>
+        <p class="font-serif italic text-base text-brand-dark font-medium">&ldquo;Athithi Devo Bhava&rdquo;</p>
+        <p class="text-[11px] text-neutral-500 max-w-[280px] mx-auto leading-relaxed">
+          Serving pure vegetarian goodness crafted with heirloom recipes since 1988.
+        </p>
+      </section>
+
+    </main>
+
+    <!-- Persistent Bottom Navigation Bar -->
+    <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] bg-surface/95 backdrop-blur-md border-t border-surface-dim/60 px-6 py-2.5 flex justify-between items-center z-40">
+      <!-- Tab 1: Home -->
+      <a href="index.html" class="flex flex-col items-center gap-1 text-neutral-500 hover:text-brand transition-colors">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+        <span class="text-[11px] font-medium">Home</span>
+      </a>
+
+      <!-- Tab 2: Menu -->
+      <a href="menu.html" class="flex flex-col items-center gap-1 text-neutral-500 hover:text-brand transition-colors">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/>
+          <path d="M7 2v20"/>
+          <path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>
+        </svg>
+        <span class="text-[11px] font-medium">Menu</span>
+      </a>
+
+      <!-- Tab 3: Contact (Active) -->
+      <a href="contact.html" class="flex flex-col items-center gap-1 text-brand">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+        </svg>
+        <span class="text-[11px] font-bold">Contact</span>
+      </a>
+    </nav>
+
+  </div>
+
+</body>
+</html>

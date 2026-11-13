@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome Restaurant - Authentic Pure Vegetarian South Indian</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Newsreader & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: { DEFAULT: '#d35400', dark: '#9c3d00', light: '#fdebd0' },
+            surface: { DEFAULT: '#fcf9f4', dim: '#dcdad5', container: '#f6f3ee', card: '#ffffff' },
+            veg: '#1e7e34'
+          },
+          fontFamily: {
+            serif: ['Newsreader', 'Georgia', 'serif'],
+            sans: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { background-color: #ece8e1; font-family: 'Plus Jakarta Sans', sans-serif; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="flex justify-center min-h-screen antialiased text-neutral-800">
+  <!-- Mobile Screen Container (Max 430px) -->
+  <div class="w-full max-w-[430px] bg-surface min-h-screen flex flex-col relative shadow-2xl pb-24">
+
+    <!-- Top App Header -->
+    <header class="sticky top-0 z-30 bg-surface/95 backdrop-blur-md px-4 py-3 border-b border-surface-dim/50 flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <div class="w-10 h-10 rounded-full bg-brand/10 border border-brand/20 flex items-center justify-center text-brand text-lg font-serif font-black shadow-sm">
+          WR
+        </div>
+        <div>
+          <div class="flex items-center gap-1.5">
+            <h1 class="font-serif text-lg font-bold text-neutral-900 leading-tight">Welcome Restaurant</h1>
+            <span class="inline-flex items-center justify-center w-3.5 h-3.5 border border-veg p-0.5 rounded-[2px]" title="100% Pure Veg">
+              <span class="w-1.5 h-1.5 bg-veg rounded-full"></span>
+            </span>
+          </div>
+          <p class="text-[10px] tracking-wider uppercase font-semibold text-neutral-500">HOME &bull; PURE VEGETARIAN</p>
+        </div>
+      </div>
+      <a href="contact.html" class="w-9 h-9 rounded-full bg-brand/10 text-brand flex items-center justify-center shadow-xs hover:bg-brand hover:text-white transition-colors" title="Account / Location">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </a>
+    </header>
+
+    <!-- Main Content -->
+    <main class="space-y-4 px-4 py-3 flex-1">
+      
+      <!-- Hero Banner Card -->
+      <section class="relative rounded-3xl overflow-hidden shadow-md text-white">
+        <!-- Background Imagery & Gradient Overlay -->
+        <img 
+          src="https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=800&q=80" 
+          alt="South Indian Traditional Breakfast Spread" 
+          class="w-full h-72 object-cover"
+        />
+        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/55 to-black/30 p-5 flex flex-col justify-end">
+          <!-- Badges -->
+          <div class="flex flex-wrap items-center gap-2 mb-2">
+            <span class="bg-emerald-800/90 text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full border border-emerald-500/30 backdrop-blur-xs">
+              ● Pure Veg &bull; Since 1988
+            </span>
+            <span class="bg-amber-600/90 text-white text-[10px] font-bold px-2 py-0.5 rounded-full backdrop-blur-xs">
+              Pure Cow Ghee
+            </span>
+          </div>
+          
+          <h2 class="font-serif text-2xl font-bold leading-tight drop-shadow-sm">
+            Authentic South Indian Flavours
+          </h2>
+          <p class="text-xs text-neutral-200 mt-1.5 line-clamp-2 drop-shadow-sm font-light">
+            Fresh stone-ground batter, hand-roasted spices, and age-old Madras recipes handed down through generations.
+          </p>
+
+          <!-- Hero Action CTAs -->
+          <div class="grid grid-cols-2 gap-2.5 mt-4">
+            <a href="menu.html" class="inline-flex items-center justify-center gap-2 bg-brand hover:bg-brand-dark text-white text-xs font-bold py-2.5 px-3 rounded-xl shadow-md transition-all active:scale-98">
+              <span>🍴 Explore Menu</span>
+            </a>
+            <a href="menu.html" class="inline-flex items-center justify-center gap-2 bg-white hover:bg-neutral-100 text-neutral-900 text-xs font-bold py-2.5 px-3 rounded-xl shadow-md transition-all active:scale-98">
+              <span>🛍️ Takeaway</span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Operational Timing & Quick Call Strip -->
+      <section class="bg-surface-card border border-surface-dim/70 rounded-2xl p-3 flex items-center justify-between shadow-xs">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center text-sm">
+            🕒
+          </div>
+          <div>
+            <div class="flex items-center gap-1.5 text-xs font-bold text-neutral-900">
+              <span class="w-2 h-2 rounded-full bg-emerald-600"></span>
+              <span>Open Daily: 6:30 AM &ndash; 10:30 PM</span>
+            </div>
+            <p class="text-[11px] text-neutral-500">South Mada St, Mylapore &bull; Chennai</p>
+          </div>
+        </div>
+        <a href="tel:+919840012345" class="w-8 h-8 rounded-full bg-surface-container border border-surface-dim text-neutral-700 flex items-center justify-center text-xs hover:bg-brand hover:text-white transition-colors" title="Call Restaurant">
+          📞
+        </a>
+      </section>
+
+      <!-- Meal Timings / Filter Chips -->
+      <section class="space-y-2">
+        <div class="flex items-center justify-between">
+          <h3 class="font-serif text-base font-bold text-neutral-900">Morning &amp; Evening Tiffin</h3>
+          <span class="text-[10px] uppercase font-bold text-brand bg-brand-light px-2 py-0.5 rounded-md">All-Day Kitchen</span>
+        </div>
+        <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
+          <a href="menu.html" class="px-4 py-1.5 rounded-full text-xs font-bold bg-emerald-900 text-white shadow-xs whitespace-nowrap flex items-center gap-1.5">
+            <span>🍱</span> Tiffin Specials
+          </a>
+          <a href="menu.html" class="px-4 py-1.5 rounded-full text-xs font-semibold bg-surface-card border border-surface-dim text-neutral-700 hover:bg-surface-container whitespace-nowrap flex items-center gap-1.5">
+            <span>🥟</span> Snacks &amp; Bajji
+          </a>
+          <a href="menu.html" class="px-4 py-1.5 rounded-full text-xs font-semibold bg-surface-card border border-surface-dim text-neutral-700 hover:bg-surface-container whitespace-nowrap flex items-center gap-1.5">
+            <span>☕</span> Filter Coffee
+          </a>
+        </div>
+      </section>
+
+      <!-- Chef's Bestsellers -->
+      <section class="space-y-3">
+        <div class="flex items-center justify-between">
+          <div>
+            <span class="text-[10px] font-bold text-brand uppercase tracking-wider block">Signature Selections</span>
+            <h3 class="font-serif text-lg font-bold text-neutral-900 leading-tight">Chef's Bestsellers</h3>
+          </div>
+          <span class="text-[11px] text-neutral-500 font-medium">Tempered in Pure Ghee</span>
+        </div>
+
+        <div class="space-y-3">
+          <!-- Item 1: Thatte Idly -->
+          <div class="bg-surface-card rounded-2xl p-3 border border-surface-dim/60 shadow-xs flex items-center justify-between gap-3">
+            <div class="flex-1 space-y-1">
+              <div class="flex items-center gap-1.5">
+                <span class="inline-flex items-center justify-center w-3 h-3 border border-veg p-0.5 rounded-[2px]"><span class="w-1.5 h-1.5 bg-veg rounded-full"></span></span>
+                <h4 class="font-semibold text-neutral-900 text-sm">Ghee Podi Thatte Idly</h4>
+              </div>
+              <p class="text-[11px] text-neutral-500 leading-snug">Melt-in-mouth thick rice disc coated with spicy spiced lentil gunpowder &amp; ghee.</p>
+              <div class="pt-1.5 flex items-center justify-between">
+                <span class="font-bold text-neutral-900 text-sm">₹60</span>
+                <a href="menu.html" class="px-3.5 py-1 bg-brand text-white rounded-lg text-xs font-bold hover:bg-brand-dark transition-all shadow-xs">+ ADD</a>
+              </div>
+            </div>
+            <img src="https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=220&q=80" alt="Thatte Idly" class="w-16 h-16 rounded-xl object-cover border border-surface-dim/50" />
+          </div>
+
+          <!-- Item 2: Crispy Masala Dosa -->
+          <div class="bg-surface-card rounded-2xl p-3 border border-surface-dim/60 shadow-xs flex items-center justify-between gap-3">
+            <div class="flex-1 space-y-1">
+              <div class="flex items-center gap-1.5">
+                <span class="inline-flex items-center justify-center w-3 h-3 border border-veg p-0.5 rounded-[2px]"><span class="w-1.5 h-1.5 bg-veg rounded-full"></span></span>
+                <h4 class="font-semibold text-neutral-900 text-sm">Crispy Masala Dosa</h4>
+              </div>
+              <p class="text-[11px] text-neutral-500 leading-snug">Signature thin crepe roasted in butter, filled with aromatic spiced potato mash.</p>
+              <div class="pt-1.5 flex items-center justify-between">
+                <span class="font-bold text-neutral-900 text-sm">₹90</span>
+                <a href="menu.html" class="px-3.5 py-1 bg-brand text-white rounded-lg text-xs font-bold hover:bg-brand-dark transition-all shadow-xs">+ ADD</a>
+              </div>
+            </div>
+            <img src="https://images.unsplash.com/photo-1668236543090-82eba5ee5976?auto=format&fit=crop&w=220&q=80" alt="Crispy Masala Dosa" class="w-16 h-16 rounded-xl object-cover border border-surface-dim/50" />
+          </div>
+
+          <!-- Item 3: Hot Ghee Ven Pongal -->
+          <div class="bg-surface-card rounded-2xl p-3 border border-surface-dim/60 shadow-xs flex items-center justify-between gap-3">
+            <div class="flex-1 space-y-1">
+              <div class="flex items-center gap-1.5">
+                <span class="inline-flex items-center justify-center w-3 h-3 border border-veg p-0.5 rounded-[2px]"><span class="w-1.5 h-1.5 bg-veg rounded-full"></span></span>
+                <h4 class="font-semibold text-neutral-900 text-sm">Hot Ghee Ven Pongal</h4>
+              </div>
+              <p class="text-[11px] text-neutral-500 leading-snug">Silky moong lentil mash tempered with crushed tellicherry pepper, cashews &amp; cumin.</p>
+              <div class="pt-1.5 flex items-center justify-between">
+                <span class="font-bold text-neutral-900 text-sm">₹75</span>
+                <a href="menu.html" class="px-3.5 py-1 bg-brand text-white rounded-lg text-xs font-bold hover:bg-brand-dark transition-all shadow-xs">+ ADD</a>
+              </div>
+            </div>
+            <img src="https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=220&q=80" alt="Ven Pongal" class="w-16 h-16 rounded-xl object-cover border border-surface-dim/50" />
+          </div>
+
+          <!-- Item 4: Madras Filter Coffee -->
+          <div class="bg-surface-card rounded-2xl p-3 border border-surface-dim/60 shadow-xs flex items-center justify-between gap-3">
+            <div class="flex-1 space-y-1">
+              <div class="flex items-center gap-1.5">
+                <span class="inline-flex items-center justify-center w-3 h-3 border border-veg p-0.5 rounded-[2px]"><span class="w-1.5 h-1.5 bg-veg rounded-full"></span></span>
+                <h4 class="font-semibold text-neutral-900 text-sm">Madras Filter Coffee</h4>
+              </div>
+              <p class="text-[11px] text-neutral-500 leading-snug">First-decoction chicory blend poured with fresh farm milk into brass dabara.</p>
+              <div class="pt-1.5 flex items-center justify-between">
+                <span class="font-bold text-neutral-900 text-sm">₹35</span>
+                <a href="menu.html" class="px-3.5 py-1 bg-brand text-white rounded-lg text-xs font-bold hover:bg-brand-dark transition-all shadow-xs">+ ADD</a>
+              </div>
+            </div>
+            <img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=220&q=80" alt="Filter Coffee" class="w-16 h-16 rounded-xl object-cover border border-surface-dim/50" />
+          </div>
+        </div>
+      </section>
+
+      <!-- Our Promise: Banana Leaf Heritage -->
+      <section class="bg-surface-container border border-surface-dim/70 rounded-3xl p-4 space-y-3 shadow-xs">
+        <div class="flex items-center gap-2 text-emerald-800 text-xs font-bold uppercase tracking-wider">
+          <span>🌿</span> Our Promise of Purity
+        </div>
+        <h3 class="font-serif text-lg font-bold text-neutral-900 leading-snug">
+          The Traditional Banana Leaf Heritage
+        </h3>
+        <p class="text-xs text-neutral-600 leading-relaxed">
+          Every meal at Welcome Restaurant honors age-old culinary ethics. We serve exclusively on fresh, sanitised plantain leaves, using cold wood-pressed sesame oil, fresh churned butter, and naturally fermented batter prepared fresh before dawn every single morning.
+        </p>
+
+        <!-- Purity Grid Tags -->
+        <div class="grid grid-cols-2 gap-2 pt-1 text-[11px]">
+          <div class="bg-surface-card rounded-xl p-2.5 border border-surface-dim/60 flex items-start gap-2">
+            <span class="text-brand text-base">🔥</span>
+            <div>
+              <p class="font-bold text-neutral-900">100% Sattvic</p>
+              <p class="text-[10px] text-neutral-500">Zero artificial essences or preservatives</p>
+            </div>
+          </div>
+          <div class="bg-surface-card rounded-xl p-2.5 border border-surface-dim/60 flex items-start gap-2">
+            <span class="text-emerald-700 text-base">🥘</span>
+            <div>
+              <p class="font-bold text-neutral-900">Brass Steamed</p>
+              <p class="text-[10px] text-neutral-500">Cooked using traditional brass &amp; bell metal</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Customer Reviews & Table Reservation CTA -->
+      <section class="bg-amber-50 border border-amber-200/80 rounded-2xl p-3.5 flex items-center justify-between shadow-xs">
+        <div>
+          <div class="flex items-center gap-1.5">
+            <span class="text-base font-black text-neutral-900 font-serif">4.8</span>
+            <div class="flex text-amber-500 text-xs">★★★★★</div>
+          </div>
+          <p class="text-[10px] text-neutral-600 font-medium">Over 18,000+ happy morning patrons</p>
+        </div>
+        <a href="contact.html" class="px-3.5 py-2 bg-emerald-900 hover:bg-emerald-950 text-white rounded-xl text-xs font-bold shadow-xs transition-colors">
+          🍽️ Reserve Table
+        </a>
+      </section>
+
+    </main>
+
+    <!-- Bottom Persistent Navigation Bar -->
+    <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] bg-surface/95 backdrop-blur-md border-t border-surface-dim/60 px-6 py-2.5 flex justify-between items-center z-40">
+      <a href="index.html" class="flex flex-col items-center gap-1 text-brand font-bold">
+        <span class="text-sm">🏠</span>
+        <span class="text-[10px]">Home</span>
+      </a>
+      <a href="menu.html" class="flex flex-col items-center gap-1 text-neutral-500 hover:text-neutral-900">
+        <span class="text-sm">🍽️</span>
+        <span class="text-[10px] font-medium">Menu</span>
+      </a>
+      <a href="contact.html" class="flex flex-col items-center gap-1 text-neutral-500 hover:text-neutral-900">
+        <span class="text-sm">📞</span>
+        <span class="text-[10px] font-medium">Contact</span>
+      </a>
+    </nav>
+
+  </div>
+</body>
+</html>
